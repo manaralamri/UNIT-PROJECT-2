@@ -1,0 +1,38 @@
+{% extends 'main/base.html'%}
+{% block content %}
+<div class="row d-flex p-3 mt-3">
+  <div class="col-6">
+    <h1>Create Products new: </h1>
+    <form class="d-flex flex-column gap-2" action="{% url 'products:product_update_view' product.id%}" method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+    <input type="text" placeholder="name" name="name" class="form-control" value="{{product.name}}" required minlength="5" maxlength="100"/>
+    <textarea placeholder="Description" name="description" class="from-control" required>{{product.description}}</textarea>
+    <input type="text" placeholder="category" name="category" class="form-control" value="{{product.category}}"/>
+    <input type="text" placeholder="price" name="price" class="form-control" value="{{product.price}}"/>
+    <input type="brand" placeholder="brand" name="brand" class="form-control" value="{{product.brand}}"/>
+    <input type="colour" placeholder="colour" name="colour" class="form-control" value="{{product.colour}}"/>
+    <input type="size" placeholder="size" name="size" class="form-control" value="{{product.size}}"/>
+    <input type="quantity" placeholder="quantity" name="quantity" class="form-control" value="{{product.quantity}}"/>
+
+    <div class="row">
+      <div class="col-3">
+        <img src="{{product.image.url}}" class="w-100"/>
+      </div>
+
+      <div class="col">
+        <input type="file" name="image" class="from-control"  accept="image/*"/>
+
+      </div>
+    </div>
+
+
+    <input type="submit" value="Create" class="btn btn-primary"/>
+    </form>
+
+    
+
+  
+  </div>
+
+</div>
+{% endblock%}

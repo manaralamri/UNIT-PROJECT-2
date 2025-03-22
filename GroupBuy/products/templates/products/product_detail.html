@@ -1,0 +1,126 @@
+{% extends 'main/base.html' %}
+{% block content %}
+<div class="row">
+  <div class="col-md-6">
+    <img src="{{ product.image.url }}" class="w-100 product-image" alt="{{ product.name }}" />
+  </div>
+  <div class="col-md-6 text-right"> 
+    <div class="d-flex flex-column gap-3">
+      <h1 class="text-right">{{ product.name }}</h1> 
+      <p><strong></strong> {{ product.name }}</p>
+      <p><strong></strong> {{ product.price }}</p>
+      <p><strong></strong> {{ product.brand }}</p>
+      <p><strong></strong> {{ product.description }}</p>
+      <p><strong></strong> {{ product.category }}</p>
+    </div>
+  </div>
+</div>
+
+<hr>
+
+{% if request.user.is_authenticated and request.user.profile_seller %}
+<div class="d-flex justify-content-end gap-2">
+  <a href="{% url 'products:product_update_view' product.id %}" class="btn btn-primary">Update</a>
+  <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">
+    Delete
+  </button>
+</div>
+{% endif %}
+
+<h2> Reviews ({{reviews.count}}) </h2>
+<div class="d-flex flex-column gap-3">
+  {% for review in reviews%}
+  <div class="d-flex flex-column gap-2 p-3 shadow">
+    <a href="{% url 'accounts:profile_view' review.user.username%}"><h4>{{review.user.first_name}} {{review.user.last_name}}</h4></a>
+
+    <div class="rating-display">
+      {% for i in "12345" %}
+        {% if forloop.counter <= review.rating %}
+          <span class="text-warning">★</span>
+        {% else %}
+          <span class="text-muted">★</span>
+        {% endif %}
+      {% endfor %}
+    </div>
+    
+    <p>{{review.comment}}</p>
+    <p class="text-muted">{{review.created_at}}<p>
+  </div>
+  {% endfor %}
+
+</div>
+{% if  request.user.is_authenticated and not request.user.profile_seller %}
+<form class="d-flex flex-column gap-2 mt-4" action="{% url 'products:add_review_view' product.id%}" method="post">
+  {% csrf_token %}
+  <textarea name="comment" placeholder="Comment..." class="from-control" required minlength="3"></textarea>
+  <!--<select class="form-control" name="rating" required>
+    <option value="">Reting</option>
+    <option value="1">1</option>
+    <option value="2">2</option>
+    <option value="3">3</option>
+    <option value="4">4</option>
+    <option value="5">5</option>
+  </select>-->
+
+  <div class="form-group">
+    <label class="text-left">Rating:</label>
+    <div class="rating d-flex flex-row-reverse gap-1 justify-content-start">
+      <input type="radio" id="star5" name="rating" value="5" required>
+      <label for="star5">★</label>
+  
+      <input type="radio" id="star4" name="rating" value="4">
+      <label for="star4">★</label>
+  
+      <input type="radio" id="star3" name="rating" value="3">
+      <label for="star3">★</label>
+  
+      <input type="radio" id="star2" name="rating" value="2">
+      <label for="star2">★</label>
+  
+      <input type="radio" id="star1" name="rating" value="1">
+      <label for="star1">★</label>
+    </div>
+  </div>
+          
+  <input type="submit" class="btn btn-primary" value="Add Review" />
+
+
+</form>
+{% elif request.user.is_authenticated and request.user.profile_seller %}
+  <div class="p-3 rounded bg-warning mt-4 d-flex flex-column gap-3">
+    <p>Only regular users can add reviews.</p>
+  </div>
+
+{% else %}
+<div class="p-3 rounded bg-warning mt-4 d-flex flex-column gap-3">
+ <p> You must be logged in to add a review</p>
+ </div>
+{% endif%}
+
+<h2>طلب المنتج</h2>
+<form method="post" action="{% url 'orders:create_order_view' product.id %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">طلب المنتج</button>
+</form>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Delete Game</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to delete {{ product.name }}?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <a href="{% url 'products:product_delete_view' product.id %}" class="btn btn-danger">Delete</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

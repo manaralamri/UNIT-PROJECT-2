@@ -1,0 +1,57 @@
+{% extends 'main/base.html'%}
+
+{% load static %}
+{% block title %} Sign In{% endblock %}
+
+{% block content %}
+<!--<div class="container d-flex flex-column justify-content-center align-items-center">
+
+    <h2>Sign In </h2>
+
+    <form class="d-flex flex-column gap-3 w-50" action="{% url 'accounts:sign_in' %}{% if 'next' in request.GET %}?next={{request.GET.next}}{% endif %}" method="POST">
+        {% csrf_token %}
+        
+
+        <div class="form-floating">
+            <input type="text" class="form-control" id="floatingInput" placeholder="username" name="username">
+            <label for="floatingInput">User name</label>
+        </div>
+
+
+        <div class="form-floating">
+          <input type="password" class="form-control" id="floatingPassword" placeholder="Password" name="password">
+          <label for="floatingPassword">Password</label>
+        </div>
+    
+
+        <button class="btn btn-primary w-100 py-2" type="submit">Sign In</button>
+      </form>
+    </div>-->
+
+    <div class="container d-flex justify-content-center align-items-center min-vh-100 py-4">
+      <div class="row w-75 shadow-lg rounded p-3">
+          <!-- القسم الخاص بالصورة -->
+          <div class="col-12 col-md-6 p-0">
+              <img src="{% static 'images/Login-pana (1).svg' %}" alt="Sign In" class="img-fluid rounded-start w-100 h-100" style="object-fit: cover;">
+          </div>
+          
+          <!-- القسم الخاص بالنموذج -->
+          <div class="col-12 col-md-6 d-flex flex-column justify-content-center p-5">
+              <h2 class="text-center mb-4">Sign In</h2>
+              <form action="{% url 'accounts:sign_in' %}{% if 'next' in request.GET %}?next={{ request.GET.next }}{% endif %}" method="POST">
+                  {% csrf_token %}
+                  <div class="form-floating mb-3">
+                      <input type="text" class="form-control" id="floatingInput" placeholder="username" name="username">
+                      <label for="floatingInput">User name</label>
+                  </div>
+                  <div class="form-floating mb-3">
+                      <input type="password" class="form-control" id="floatingPassword" placeholder="Password" name="password">
+                      <label for="floatingPassword">Password</label>
+                  </div>
+                  <button class="btn btn-primary w-100 py-2" type="submit">Sign In</button>
+              </form>
+          </div>
+      </div>
+    </div>
+          
+{% endblock %}

@@ -1,0 +1,21 @@
+
+<div class="container mt-3">
+
+    <div class="row">
+        {% for product in products %}
+        <div class="col-12 col-sm-6 col-md-3 mb-4"> 
+            <div class="d-flex flex-column justify-content-start align-items-start h-100 p-4 shadow gap-2">
+                <img src="{{ product.image.url }}" class="w-100 h-100 object-fit-cover" alt="{{ product.name }}" style="max-height: 200px;"/>
+
+                <a href="#"  class="text-decoration-none text-dark"><h5 class="text-center">{{ product.name }}</h5></a>
+
+                <h5 class="text-center text-muted">{{ product.brand }}</h5>
+                <h6 class="text-center text-success">{{ product.price }}</h6>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+
+

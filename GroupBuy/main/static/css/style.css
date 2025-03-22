@@ -1,0 +1,335 @@
+/* تغيير لون الخلفية إلى أزرق غامق */
+.navbar {
+  background-color:  #0a2540; /* اللون الأزرق الغامق */
+}
+.navbar-nav .nav-link {
+  color: #ffffff;
+}
+
+/* تغيير لون النصوص عند التمرير فوقها */
+.navbar-nav .nav-link:hover {
+  color: #4f9cf9; /* الأزرق الفاتح عند التمرير */
+}
+
+/* تغيير لون النصوص في الـ Dropdown */
+.navbar .dropdown-menu {
+  background-color: #003366; /* الأزرق الغامق */
+}
+
+.navbar .dropdown-item {
+  color: #ffffff; /* النصوص باللون الأبيض داخل الـ Dropdown */
+}
+
+.navbar .dropdown-item:hover {
+  background-color: #4f9cf9; /* الأزرق الفاتح عند التمرير */
+}
+
+/* تغيير لون الأيقونات في الشريط العلوي */
+.navbar-nav .nav-item i {
+  color: #ffffff;
+}
+
+/* تغيير لون الأيقونات عند التمرير فوقها */
+.navbar-nav .nav-item i:hover {
+  color: #2f445e; /* الأزرق الفاتح عند التمرير */
+}
+.navbar-toggler {
+  background-color: white !important;
+  border: 1px solid #ccc; 
+  padding: 0.25rem 0.5rem; 
+  width: 35px; 
+  height: 35px; 
+
+}
+.navbar-toggler-icon {
+  width: 20px;
+  height: 20px;
+}
+
+
+.btn-dark-blue {
+  background-color: #1c3d5a; /* أزرق غامق */
+  color: white;
+}
+
+/* index.html style  */
+.hero-row {
+  height: 100vh;
+}
+.hero::before{
+  content: "";
+  position: absolute;
+  top: 0;
+  left :0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to right, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0)); 
+  z-index: 1;
+}
+.hero {
+  position: relative;
+  height: 450px; 
+  width: 100%;
+  overflow: hidden;
+  border-radius: 5px;
+
+}
+.hero img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.hero-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #000;
+  text-align: center;
+  padding: 20px;
+  border-radius: 10px;
+  width: 80%;
+  font-family: 'Roboto', sans-serif;
+  font-size: 7rem;
+  font-weight: bold;
+  z-index: 2;
+}
+@media (max-width: 768px) {
+  .hero-text {
+      font-size: 1rem;
+      padding: 10px;
+  }
+}
+/* style base.html*/
+.top-navbar{
+  background-color: #0a2540;
+}
+
+.top-navbar .navbar-brand,
+.top-navbar .nav-link,
+.top-navbar .nav-link.dropdown-toggle{
+  color: #fffefe !important; 
+}
+.top-navbar .dropdown-menu {
+  background-color: #ffffff;
+}
+
+.top-navbar .dropdown-menu .dropdown-item {
+  color: blue !important;
+}
+
+
+.top-navbar .nav-link.active,
+.top-navbar .nav-link.disabled {
+  color: #fffefe !important;
+}
+.top-navbar .btn:active {
+  background-color: blue !important;
+  border-color: blue !important;
+  color: white !important;
+}
+.top-navbar .btn-outline-success{
+  background-color: transparent !important;
+  border-color: rgb(16, 3, 65) !important;
+  color: rgb(251, 255, 255) !important;
+
+
+}
+.top-navbar .btn-outline-success:active {
+  background-color: rgb(3, 3, 61) !important;
+  border-color: blue !important;
+  color: white !important;
+}
+.top-navbar .btn-outline-success:hover {
+  background-color: blue !important;
+  border-color: blue !important;
+  color: white !important;
+}
+
+/* Footer Styling */
+.footer-20192 {
+  background: #0a2540;
+  color: #ffffff;
+  padding: 40px 0;
+  font-family: Arial, sans-serif;
+  padding: 80px 0 40px;
+}
+
+.footer-20192 a {
+  color: #ffffff;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.footer-20192 a:hover {
+  color: #4f9cf9;
+}
+
+.footer-20192 h3 {
+  color: #ffffff;
+  margin-bottom: 15px;
+  font-size: 1.2rem;
+}
+
+.footer-20192 .list-unstyled {
+  padding: 0;
+  list-style: none;
+}
+
+.footer-20192 .social a {
+  margin-right: 10px;
+  font-size: 1.5rem;
+}
+
+.footer-20192 .copyright small {
+  color: #ffffff;
+  font-size: 0.9rem;
+}
+
+/* CTA Section */
+.footer-20192 .cta {
+  position: relative;
+  background: #1c3d5a;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  margin-top: -20px;
+
+
+}
+
+.footer-20192 .cta h2,
+.footer-20192 .cta h3 {
+  margin: 0;
+  color: #ffffff;
+}
+
+.footer-20192 .btn-dark {
+  background: #08284f;
+  color: #ffffff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+.footer-20192 .btn-dark:hover {
+  background: #ffffff;
+  color: #0a2540;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .footer-20192 .cta {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+.social {
+  display: flex;
+  gap: 10px; 
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.social li {
+  display: inline-block;
+}
+
+.banner-image {
+  max-height: 400px;
+  object-fit: cover;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  background-color: white; 
+  border-radius: 50%;
+  width: 40px; 
+  height: 40px; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+}
+
+.carousel-control-prev-icon::before,
+.carousel-control-next-icon::before {
+    content: ""; 
+    display: inline-block; 
+    width: 10px; 
+    height: 10px; 
+    border-top: 2px solid black; 
+    border-right: 2px solid black; 
+}
+
+/* page product_detail.html style */
+.product-image {
+  width: 80%;  
+  max-width: 300px;  
+  margin-left: 77px;
+  border: 2px solid #000;  
+  border-radius: 8px;  
+}
+
+
+.form-box {
+  border: 1px solid #000000;
+  padding: 20px;
+  border-radius: 10px;
+  background-color: #f9f9f9;
+}
+
+.form-label {
+  font-weight: bold;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  border: none;
+  padding: 12px 20px;
+  font-size: 16px;
+  border-radius: 5px;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+}
+/* style profile*/
+.profile-avatar{
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border: 3px solid #0d6efd; /* لون الإطار الأساسي في Bootstrap */
+  border-radius: 50%;
+
+}  
+/* style for detales page*/
+.rating input {
+  display: none;
+}
+
+.rating label {
+  font-size: 2rem;
+  color: #ccc;
+  cursor: pointer;
+}
+
+.rating input:checked ~ label {
+  color: gold;
+}
+
+.rating label:hover,
+.rating label:hover ~ label {
+  color: gold;
+}
+
+

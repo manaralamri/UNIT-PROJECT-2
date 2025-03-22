@@ -1,0 +1,109 @@
+{% extends 'main/base.html' %}
+{%load static %}
+{% block title %} Sign Up new seller {% endblock %}
+
+{% block content %}
+
+<!--<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="form-box">
+                <h2 class="text-center mb-4">Sign Up Seller</h2>
+                <form class="d-flex flex-column gap-3" action="{% url 'accounts:seller_sign_up' %}" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label for="floatingInput" class="form-label">Email address</label>
+                        <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com" name="email" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="floatingInput" class="form-label">User name</label>
+                        <input type="text" class="form-control" id="floatingInput" placeholder="username" name="username" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="floatingInput" class="form-label">First name</label>
+                        <input type="text" class="form-control" id="floatingInput" placeholder="First name" name="first_name" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="floatingInput" class="form-label">Last name</label>
+                        <input type="text" class="form-control" id="floatingInput" placeholder="Last name" name="last_name" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="crNumber" class="form-label">CR Number</label>
+                        <input type="text" class="form-control" id="crNumber" placeholder="CR Number" name="CR" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="crImage" class="form-label">CR Image</label>
+                        <input class="form-control" type="file" id="crImage" name="CR_image" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="floatingPassword" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="floatingPassword" placeholder="Password" name="password" required>
+                    </div>
+
+                    <button class="btn btn-primary w-100" type="submit">Sign up</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>-->
+
+
+<div class="container d-flex justify-content-center align-items-center min-vh-100 py-4">
+    <div class="row w-75 shadow-lg rounded p-3 d-flex align-items-center my-4">
+        <div class="col-12 col-md-6 d-flex justify-content-center p-0">
+            <img src="{% static 'images/Login-pana (1).svg' %}" alt="Sign In" class="img-fluid rounded-start w-100" style="max-width: 80%; object-fit: contain;">
+        </div>
+
+        <div class="col-12 col-md-6 d-flex flex-column justify-content-center p-4">
+            <h2 class="text-center mb-4">Sign Up Seller</h2>
+            <form class="d-flex flex-column gap-3" action="{% url 'accounts:seller_sign_up' %}" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="floatingInput" class="form-label">Email address</label>
+                    <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com" name="email" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="username" class="form-label">User name</label>
+                    <input type="text" class="form-control" id="username" placeholder="username" name="username" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="firstName" class="form-label">First name</label>
+                    <input type="text" class="form-control" id="firstName" placeholder="First name" name="first_name" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="lastName" class="form-label">Last name</label>
+                    <input type="text" class="form-control" id="lastName" placeholder="Last name" name="last_name" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="crNumber" class="form-label">CR Number</label>
+                    <input type="text" class="form-control" id="crNumber" placeholder="CR Number" name="CR" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="crImage" class="form-label">CR Image</label>
+                    <input class="form-control" type="file" id="crImage" name="CR_image" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="floatingPassword" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="floatingPassword" placeholder="Password" name="password" required>
+                </div>
+
+                <button class="btn btn-primary w-100" type="submit">Sign up</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
