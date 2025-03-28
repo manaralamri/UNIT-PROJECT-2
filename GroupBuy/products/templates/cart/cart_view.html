@@ -1,0 +1,63 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2 class="mb-3">Your Cart</h2>
+  {% if cart.items.all %}
+    <table class="table table-bordered">
+      <thead class="thead-light">
+        <tr>
+          <th>Image</th>
+          <th>Product</th>
+          <th>Quantity</th>
+          <th>Price</th>
+          <th>Total</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in cart.items.all %}
+          <tr>
+            <td>
+              <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="img-thumbnail" style="width: 80px; height: 80px; object-fit: cover;">
+            </td>
+            <td>
+              <a href="{% url 'products:product_detail_view' item.product.id %}" class="text-primary font-weight-bold">
+                {{ item.product.name }}
+              </a>
+            </td>
+            <td>
+              <div class="d-flex align-items-center">
+                <a href="{% url 'products:decrease_cart_quantity_view' item.product.id %}" 
+                   class="btn btn-sm btn-outline-danger mx-1"
+                   style="min-width: 20px;">-</a>
+                   
+                <span class="px-2">{{ item.quantity }}</span>
+            
+                <a href="{% url 'products:increase_cart_quantity_view' item.product.id %}" 
+                   class="btn btn-sm btn-outline-success mx-1"
+                   style="min-width: 20px;">+</a>
+              </div>
+            </td>
+            <td>${{ item.product.price }}</td>
+            <td>${{ item.total_price }}</td>
+            <td>
+              <div class="button-group">
+                <a href="{% url 'products:remove_from_cart_view' item.product.id %}" class="btn btn-danger btn-sm">
+                  <i class="bi bi-trash"></i>
+                </a>
+                <a href="{% url 'orders:create_order_view' item.product.id %}" class="btn btn-primary btn-sm">
+                  <i class="bi bi-cart-check"></i>
+                </a>
+              </div>
+                                    </td>
+            </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <h4 class="text-right font-weight-bold">Total: ${{ cart.total_price }}</h4>
+  {% else %}
+    <p class="text-muted">Your cart is empty.</p>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,10 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+  <h1>Your Favorite Products</h1>
+  {% if favorite_products %}
+    {% include 'products/product_list.html' with products=favorite_products %}
+  {% else %}
+    <p>You have no favorite products yet.</p>
+  {% endif %}
+{% endblock %}

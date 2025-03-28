@@ -1,0 +1,10 @@
+{% extends 'main/base.html' %}
+{% block content %}
+
+    <h1>تفاصيل الطلب</h1>
+    <p>المنتج: {{ order.product.name }}</p>
+    <p>الكمية: {{ order.quantity }}</p>
+    <p>السعر الإجمالي: {{ order.total_price }}</p>
+    <p>نوع الطلب: {% if order.order_type == "group" %}جماعي{% else %}فردي{% endif %}</p>
+
+{% endblock %}

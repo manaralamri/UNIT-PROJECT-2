@@ -1,9 +1,37 @@
-<h1>{{ product.name }}</h1>
-<p>{{ product.description }}</p>
+{% extends 'main/base.html' %}
+{% block content %}
 
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
 
-    <button type="submit">طلب المنتج</button>
-</form>
+<div class="container mt-5">
+    <div class="card shadow-lg">
+        <div class="card-header bg-primary text-white text-center">
+            <h3>طلب منتج: {{ product.name }}</h3>
+        </div>
+        <div class="card-body">
+            <p class="text-muted">{{ product.description }}</p>
+            <p class="fw-bold">السعر: {{ product.price }} ريال</p>
+
+            <form method="post" action="{% url 'orders:create_order_view' product.id %}">
+                {% csrf_token %}
+                
+                <!-- حقل مخفي لنوع الطلب (فردي) -->
+                <input type="hidden" name="order_type" value="individual">
+                <input type="hidden" name="participants" value="1">
+
+
+                <div class="mb-3">
+                    <label for="id_quantity" class="form-label">الكمية:</label>
+                    {{ form.quantity }}
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100">إتمام الطلب</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="text-center mt-4">
+        <a href="{% url 'products:all_product_view' %}" class="btn btn-secondary">العودة للمنتجات</a>
+    </div>
+</div>
+
+{% endblock%}

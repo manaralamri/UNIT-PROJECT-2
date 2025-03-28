@@ -1,0 +1,17 @@
+{% extends 'main/base.html' %}
+{% block content %}
+
+<div class="container mt-5">
+    <div class="card shadow-lg p-4">
+        <h1 class="mb-4 text-center text-primary">إنشاء شراء جماعي للمنتج:</h1>
+        <h2 class="mb-4 text-center">{{ product.name }}</h2>
+        
+        <form method="post" class="text-center">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-success btn-lg">إنشاء الشراء الجماعي</button>
+        </form>
+    </div>
+</div>
+
+
+{% endblock %}

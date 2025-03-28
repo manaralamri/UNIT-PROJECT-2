@@ -1,19 +1,55 @@
 {% extends 'main/base.html' %}
 {% block content %}
-<div class="row">
+<!--<div class="row">
+  <div class="d-flex align-items-center gap-1">
+
+    <h5 class="m-0 p-0">{{product.rating}}</h5>
+    <span class="material-symbols-outlined">star</span>
+    {% if average_rating %}
+    <span>|</span>
+    <h5 class="m-0 p-0">{{average_rating}}</h5>
+    <span class="material-symbols-outlined">reviews</span>
+    {% endif %}
+</div>
+
   <div class="col-md-6">
     <img src="{{ product.image.url }}" class="w-100 product-image" alt="{{ product.name }}" />
+
   </div>
   <div class="col-md-6 text-right"> 
     <div class="d-flex flex-column gap-3">
       <h1 class="text-right">{{ product.name }}</h1> 
       <p><strong></strong> {{ product.name }}</p>
       <p><strong></strong> {{ product.price }}</p>
+      {% if product.group_price %}
+      <p><strong>Group Price:</strong> <span style="color: red;">${{ product.group_price }}</span></p>
+    {% endif %}
+
       <p><strong></strong> {{ product.brand }}</p>
       <p><strong></strong> {{ product.description }}</p>
       <p><strong></strong> {{ product.category }}</p>
+      <p class="text-danger"><strong>Max Participants:</strong>{{product.max_participants}}</p>
     </div>
   </div>
+</div>
+
+
+<form method="post" action="{% url 'products:toggle_favorite_view' product.id %}">
+  {% csrf_token %}
+  {% if request.user in product.favorited_by.all %}
+    <button type="submit" class="btn btn-danger">Remove from Favorites ❤️</button>
+  {% else %}
+    <button type="submit" class="btn btn-success">Add to Favorites 💚</button>
+  {% endif %}
+</form>
+
+<div class="d-flex justify-content-end mt-4 gap-3">
+  <a href="{% url 'orders:create_order_view' product.id %}" class="btn btn-success">
+    <i class="bi bi-cart-plus"></i> طلب المنتج
+  </a>
+  <a href="{% url 'orders:create_group_purchase' product.id%}" class="btn btn-success">
+    <i class="bi bi-cart-plus"></i> شراء جماعي
+  </a>
 </div>
 
 <hr>
@@ -26,6 +62,7 @@
   </button>
 </div>
 {% endif %}
+
 
 <h2> Reviews ({{reviews.count}}) </h2>
 <div class="d-flex flex-column gap-3">
@@ -52,7 +89,7 @@
 {% if  request.user.is_authenticated and not request.user.profile_seller %}
 <form class="d-flex flex-column gap-2 mt-4" action="{% url 'products:add_review_view' product.id%}" method="post">
   {% csrf_token %}
-  <textarea name="comment" placeholder="Comment..." class="from-control" required minlength="3"></textarea>
+  <textarea name="comment" placeholder="Comment..." class="from-control" required minlength="3"></textarea>-->
   <!--<select class="form-control" name="rating" required>
     <option value="">Reting</option>
     <option value="1">1</option>
@@ -60,7 +97,7 @@
     <option value="3">3</option>
     <option value="4">4</option>
     <option value="5">5</option>
-  </select>-->
+  </select>
 
   <div class="form-group">
     <label class="text-left">Rating:</label>
@@ -95,16 +132,15 @@
 <div class="p-3 rounded bg-warning mt-4 d-flex flex-column gap-3">
  <p> You must be logged in to add a review</p>
  </div>
-{% endif%}
+{% endif%}-->
 
-<h2>طلب المنتج</h2>
-<form method="post" action="{% url 'orders:create_order_view' product.id %}">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">طلب المنتج</button>
-</form>
 
-<!-- Modal -->
+<!--<a href="{% url 'orders:create_order_view' product.id %}">
+  <i class="bi bi-cart-plus"></i>
+  <h2>طلب المنتج</h2></a>-->
+
+
+<!-- Modal 
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -121,6 +157,136 @@
       </div>
     </div>
   </div>
+</div>-->
+
+
+<div class="row">
+  <div class="d-flex align-items-end gap-1">
+    <h5 class="m-0 p-0">{{product.rating}}</h5>
+    <i class="bi bi-star-fill"></i>
+    <span class="material-symbols-outlined">star</span>
+    {% if average_rating %}
+    <span>|</span>
+    <h5 class="m-0 p-0">{{average_rating}}</h5>
+    <span class="material-symbols-outlined">reviews</span>
+    {% endif %}
 </div>
+
+<div class="col-md-6">
+  <img src="{{ product.image.url }}" class="w-100 product-image" alt="{{ product.name }}" />
+</div>
+
+<div class="col-md-6 text-right"> 
+  <div class="d-flex flex-column gap-3">
+    <h1 class="text-right">{{ product.name }}</h1>
+
+    <p><strong>Price:</strong> {{ product.price }}</p>
+    {% if product.group_price %}
+    <p><strong>Group Price:</strong> <span style="color: red;">${{ product.group_price }}</span></p>
+    {% endif %}
+    <p><strong>Brand:</strong> {{ product.brand }}</p>
+    <p><strong>Category:</strong> {{ product.category }}</p>
+    <p class="text-danger"><strong>Max Participants:</strong> {{product.max_participants}}</p>
+  </div>
+</div>
+<div class="d-flex justify-content-end mt-4 gap-3">
+  <a href="{% url 'products:add_to_cart_view' product.id %}" class="btn btn-warning">
+    <i class="bi bi-cart"></i> Add Cart
+  </a>
+
+  <a href="{% url 'orders:create_order_view' product.id %}" class="btn btn-success">
+    <i class="bi bi-cart-plus"></i> Individual  Buy
+  </a>
+  <a href="{% url 'orders:create_group_purchase' product.id%}" class="btn btn-success">
+    <i class="bi bi-cart-plus"></i> Group Buy
+  </a>
+</div>
+
+<!-- Tabs Section -->
+<ul class="nav nav-tabs mt-4" id="productTabs" role="tablist">
+  <li class="nav-item" role="presentation">
+    <button class="nav-link active" id="description-tab" data-bs-toggle="tab" data-bs-target="#description" type="button" role="tab" aria-controls="description" aria-selected="true">Description</button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link" id="reviews-tab" data-bs-toggle="tab" data-bs-target="#reviews" type="button" role="tab" aria-controls="reviews" aria-selected="false">Reviews</button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link" id="add-review-tab" data-bs-toggle="tab" data-bs-target="#add-review" type="button" role="tab" aria-controls="add-review" aria-selected="false">Add Reviews </button>
+  </li>
+</ul>
+
+<div class="tab-content" id="productTabsContent">
+  <!-- Description Tab -->
+  <div class="tab-pane fade show active p-3" id="description" role="tabpanel" aria-labelledby="description-tab">
+    <p>{{ product.description }}</p>
+  </div>
+
+  <!-- Reviews Tab -->
+  <div class="tab-pane fade p-3" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
+    <h2> Reviews ({{reviews.count}}) </h2>
+    <div class="d-flex flex-column gap-3">
+      {% for review in reviews%}
+      <div class="d-flex flex-column gap-2 p-3 shadow">
+        <a href="{% url 'accounts:profile_view' review.user.username%}"><h4>{{review.user.first_name}} {{review.user.last_name}}</h4></a>
+        <div class="rating-display">
+          {% for i in "12345" %}
+            {% if forloop.counter <= review.rating %}
+              <span class="text-warning">★</span>
+            {% else %}
+              <span class="text-muted">★</span>
+            {% endif %}
+          {% endfor %}
+        </div>
+        <p>{{review.comment}}</p>
+        <p class="text-muted">{{review.created_at}}<p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Add Review Tab -->
+  <div class="tab-pane fade p-3" id="add-review" role="tabpanel" aria-labelledby="add-review-tab">
+    {% if  request.user.is_authenticated and not request.user.profile_seller %}
+    <form class="d-flex flex-column gap-2 mt-4" action="{% url 'products:add_review_view' product.id%}" method="post">
+      {% csrf_token %}
+      <textarea name="comment" placeholder="Comment..." class="from-control" required minlength="3"></textarea>
+    
+      <div class="form-group">
+        <label class="text-left">Rating:</label>
+        <div class="rating d-flex flex-row-reverse gap-1 justify-content-start">
+          <input type="radio" id="star5" name="rating" value="5" required>
+          <label for="star5">★</label>
+      
+          <input type="radio" id="star4" name="rating" value="4">
+          <label for="star4">★</label>
+      
+          <input type="radio" id="star3" name="rating" value="3">
+          <label for="star3">★</label>
+      
+          <input type="radio" id="star2" name="rating" value="2">
+          <label for="star2">★</label>
+      
+          <input type="radio" id="star1" name="rating" value="1">
+          <label for="star1">★</label>
+        </div>
+      </div>
+              
+      <input type="submit" class="btn btn-primary" value="Add Review" />
+    
+    
+    </form>
+    {% elif request.user.is_authenticated and request.user.profile_seller %}
+      <div class="p-3 rounded bg-warning mt-4 d-flex flex-column gap-3">
+        <p>Only regular users can add reviews.</p>
+      </div>
+    
+    {% else %}
+    <div class="p-3 rounded bg-warning mt-4 d-flex flex-column gap-3">
+     <p> You must be logged in to add a review</p>
+     </div>
+    {% endif%}
+          </div>
+</div>
+
 
 {% endblock %}

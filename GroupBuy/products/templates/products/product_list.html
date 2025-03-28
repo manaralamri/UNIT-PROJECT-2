@@ -3,14 +3,39 @@
 
     <div class="row">
         {% for product in products %}
-        <div class="col-12 col-sm-6 col-md-3 mb-4"> 
-            <div class="d-flex flex-column justify-content-start align-items-start h-100 p-4 shadow gap-2">
-                <img src="{{ product.image.url }}" class="w-100 h-100 object-fit-cover" alt="{{ product.name }}" style="max-height: 200px;"/>
+        <div class="col-12 col-sm-6 col-md-3 mb-4">
 
+            <div class="d-flex flex-column justify-content-start align-items-start h-100 p-4 shadow gap-2">
+               <a href="{% url 'products:toggle_favorite_view' product.id %}"><i class="bi bi-heart"></i></a>
+              
+             
+                <img src="{{ product.image.url }}" class="w-100 h-100 object-fit-cover" alt="{{ product.name }}" style="max-height: 200px;"/>
+    
                 <a href="#"  class="text-decoration-none text-dark"><h5 class="text-center">{{ product.name }}</h5></a>
 
-                <h5 class="text-center text-muted">{{ product.brand }}</h5>
                 <h6 class="text-center text-success">{{ product.price }}</h6>
+                {% if product.group_price %}
+                <h6 class="text-center text-danger mb-1">
+                    Group price:{{ product.group_price }} 
+                </h6>
+                <h6 class="text-center text-danger mb-1">
+                    Max Participants: {{ product.max_participants }}
+                  </h6>
+          
+            {% endif %}
+                            
+
+                <div class="d-flex justify-content-between align-items-center w-100">
+                    <a href="{% url 'products:product_detail_view' product_id=product.id %}" class="btn btn-primary">View Product</a>
+                    <a href="{% url 'orders:create_order_view' product.id %}" class="btn btn-outline-secondary">
+                        <i class="bi bi-cart-check"></i> 
+                    </a>
+    
+                </div>
+                <h6 class="text-center bg-warning text-dark py-1 px-3 rounded">    {{ product.brand }}
+                </h6>
+
+         
             </div>
         </div>
         {% endfor %}
@@ -19,3 +44,4 @@
 
 
 
+  

@@ -1,6 +1,6 @@
 /* تغيير لون الخلفية إلى أزرق غامق */
 .navbar {
-  background-color:  #0a2540; /* اللون الأزرق الغامق */
+  background-color:  #a250e4; /* #0a2540اللون الأزرق الغامق */
 }
 .navbar-nav .nav-link {
   color: #ffffff;
@@ -100,6 +100,7 @@
       padding: 10px;
   }
 }
+
 /* style base.html*/
 .top-navbar{
   background-color: #0a2540;
@@ -145,7 +146,18 @@
   border-color: blue !important;
   color: white !important;
 }
+.header-container {
+  font-size: 0.9rem;
+  max-width: fit-content;
+  display: flex;
+  margin: 0 auto; 
+  border-radius: 2px;
 
+}
+.custom-purple{
+  background-color: #b53806;
+  color: #fffefe;
+}
 /* Footer Styling */
 .footer-20192 {
   background: #0a2540;
@@ -332,4 +344,35 @@
   color: gold;
 }
 
+
+/*# style view_cart
+--------------------------------------------------------------*/
+.button-group {
+  display: flex;
+  gap: 8px; 
+  align-items: center;
+}
+
+.button-group a {
+  font-size: 14px; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px; 
+  height: 30px;
+  text-align: center;
+}
+
+@media (max-width: 576px) {
+  .button-group {
+    flex-direction: column; 
+    align-items: center;
+  }
+
+  .button-group a {
+    width: 100%; 
+    margin-bottom: 10px; 
+  }
+}
+  
 
