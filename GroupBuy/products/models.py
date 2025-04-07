@@ -3,11 +3,12 @@ from django.contrib.auth.models import User
 
 
 
+
+
 class Product(models.Model):
   class CategoryChoices(models.TextChoices):
     MAKEUP = "Makeup", "Makeup"
     PERFUMES = "Perfumes", "Perfumes"
-    BRANDS = "Brands", "Brands"
     SKINCARE = "Skincare", "Skincare "
     HAIRCARE = "Haircare", "Haircare"
     ELECTRONICS = "Electronics", "Electronics"
@@ -24,7 +25,6 @@ class Product(models.Model):
   #category = models.CharField(max_length=225)
   category = models.CharField(max_length=250, choices=CategoryChoices.choices)
   brand = models.CharField(max_length=225)
-  #brand = models.ForeignKey(Brand, on_delete=models.CASCADE, related_name='products')
   colour = models.CharField(max_length=225)
   size = models.CharField(max_length=225)
   quantity = models.IntegerField()

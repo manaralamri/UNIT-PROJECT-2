@@ -17,13 +17,16 @@
           <div class="mb-4">
             <h5 class="text-primary">Contact Information</h5>
             <hr>
+            <p><strong>First Name:</strong>{{user.first_name}}</p>
+            <p><strong>Last Name:</strong>{{user.last_name}}</p>
             <p><strong>Address:</strong> {{profile.address }}</p>
             <p><strong>Phone:</strong> {{ profile.phone_number }}</p>
             <p><strong>City:</strong> {{ profile.city }}</p>
+
           </div>
 
           <div class="text-center">
-            <a href="#" class="btn btn-outline-primary">Twitch Link</a>
+            <a href="{% url 'accounts:update_user_profile'%}" class="btn btn-outline-primary">Update Profile</a>
           </div>
         </div>
       </div>

@@ -123,7 +123,7 @@
     </div>
 </div>
 
-<script>
+<!--<script>
     let expirationTime = new Date("{{ group_purchase.expiration_time|date:'c' }}").getTime();
     const countdownElement = document.getElementById('countdown');
     const participantsCountElement = document.getElementById("participants-count");
@@ -133,7 +133,6 @@
         const now = new Date().getTime();
         const timeLeft = expirationTime - now;
 
-        // تحقق مما إذا كان العدد قد اكتمل
         if (parseInt(participantsCountElement.textContent) >= maxParticipants) {
             countdownElement.innerHTML = "Expired";
             clearInterval(timerInterval);
@@ -149,15 +148,34 @@
         }
     }
 
-    // تحديث العد كل ثانية
     let timerInterval = setInterval(updateCountdown, 1000);
 
-    // إعادة تعيين المؤقت عند تحديث الصفحة أو عند بدء طلب جديد
     function resetTimer(newExpirationTime) {
         expirationTime = newExpirationTime;
         clearInterval(timerInterval);
         timerInterval = setInterval(updateCountdown, 1000);
     }
-</script>
+    console.log("Expiration from Django:", "{{ group_purchase.expiration_time|date:'c' }}");
+    console.log("Parsed in JS:", new Date("{{ group_purchase.expiration_time|date:'c' }}"));
+
+
+</script>-->
     
+
+<script>
+    const serverTimeStr = "{{ timezone.now|date:'Y-m-d\\TH:i:sP' }}";
+    const serverTime = new Date(serverTimeStr);
+    const clientTime = new Date();
+
+    console.log("🕒 Server Time (Django):", serverTime);
+    console.log("🖥️ Client Time (Browser):", clientTime);
+
+    if (!isNaN(serverTime.getTime())) {
+        const diffSeconds = Math.floor((clientTime - serverTime) / 1000);
+        console.log("⏳ Difference in seconds:", diffSeconds);
+    } else {
+        console.log("⚠️ Server time is invalid. Raw string:", serverTimeStr);
+    }
+</script>
+
 {% endblock %}

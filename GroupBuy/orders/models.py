@@ -9,7 +9,7 @@ class GroupPurchase(models.Model):
     participants = models.ManyToManyField(User, related_name='group_purchases', blank=True)
     is_active = models.BooleanField(default=True)  
     total_price = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal('0.00'))  
-    expiration_time = models.DateTimeField(blank=True, null=True,  default=(timezone.now() + timedelta(hours=2))) 
+    expiration_time = models.DateTimeField(blank=True, null=True, default=(timezone.now() + timedelta(seconds=15)))
 
     def calculate_total_price(self):
         price_per_product = self.product.group_price if self.product.group_price else self.product.price

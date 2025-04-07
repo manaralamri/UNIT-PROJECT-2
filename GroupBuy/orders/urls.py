@@ -4,13 +4,12 @@ from .import views
 app_name = 'orders'
 
 urlpatterns = [
-    path('create-order/<int:product_id>/', views.create_order_view, name='create_order_view'),
-    path('create-group-purchase/<int:product_id>/', views.create_group_purchase, name='create_group_purchase'),
-    path('group-purchase/<int:group_purchase_id>/', views.group_purchase_detail, name='group_purchase_detail'),
-    path('join-group-purchase/<int:group_purchase_id>/', views.join_group_purchase, name='join_group_purchase'),
-    path('order-detail/<int:order_id>/', views.order_detail, name='order_detail'),
+     path('create-order/<int:product_id>/', views.create_order_view, name='create_order_view'),
+     path('create-group-purchase/<int:product_id>/', views.create_group_purchase, name='create_group_purchase'),
+     path('group-purchase/<int:group_purchase_id>/', views.group_purchase_detail, name='group_purchase_detail'),
+     path('join-group-purchase/<int:group_purchase_id>/', views.join_group_purchase, name='join_group_purchase'),
+     path('order-detail/<int:order_id>/', views.order_detail, name='order_detail'),
 ]
-
 #app_name='orders'
 #urlpatterns = [
 #  path('create/<int:product_id>/', views.create_order_view, name='create_order_view'),

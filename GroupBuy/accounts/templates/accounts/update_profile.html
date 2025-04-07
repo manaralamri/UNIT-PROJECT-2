@@ -28,11 +28,11 @@
         </div>
 
 
-      <!--<textarea class="form-control" placeholder="address" name="address" >{{request.user.profile_user.address}}</textarea>
-      <textarea class="form-control" placeholder="phone_number" name="phone_number" >{{request.user.profile_user.phone_number}}</textarea>
-      <textarea class="form-control" placeholder="city" name="city" >{{request.user.profile_user.city}}</textarea>
-      <textarea class="form-control" placeholder="postal_code" name="postal_code">{{request.user.profile_user.postal_code}}</textarea>-->
-      <h5>Chose Avatar:</h5>
+        <textarea class="form-control" placeholder="address" name="address">{{ request.user.profile_user.address }}</textarea>
+        <textarea class="form-control" placeholder="phone_number" name="phone_number">{{ request.user.profile_user.phone_number }}</textarea>
+        <textarea class="form-control" placeholder="city" name="city">{{ request.user.profile_user.city }}</textarea>
+        <textarea class="form-control" placeholder="postal_code" name="postal_code">{{ request.user.profile_user.postal_code }}</textarea>
+              <h5>Chose Avatar:</h5>
       <img src="{{request.profile_user.avatar.url}}" class="avatar rounded-4" />
       <input type="file" name="avatar" class="form-control" accept="images/*"/>
 
@@ -42,6 +42,7 @@
 
 
         <button class="btn btn-primary w-100 py-2" type="submit">Update</button>
+
       </form>
 </div>
 
