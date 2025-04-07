@@ -141,3 +141,33 @@ def profile_view(request: HttpRequest, user_name):
         return render(request, '404.html')
 
     return render(request, template, {'user': user, 'profile': profile})
+
+
+#def update_profile_view(request:HttpRequest):
+#    if request.method == 'POST':
+#        with transaction.atomic():
+#            user = request.user
+#            user.first_name = request.POST['first_name']
+#            user.last_name = request.POST['last_name']
+#            user.email = request.POST['email']
+#            user.save()
+#            if Profile_Seller.objects.filter(user=user).exists():
+#                    profile = Profile_Seller.objects.get(user=user)
+#            else:
+#                    profile, _ = Profile_User.objects.get_or_create(user=user)
+
+
+
+            
+
+#def update_profile_view(request: HttpRequest, user_name):
+#    try:
+#        user = User.objects.get(useername = user_name)
+#        # تحقق مما إذا كان المستخدم بائعًا أو مستخدمًا عاديًا  
+#        if Profile_Seller.objects.filter(user=user).exists():
+#            profile = Profile_Seller.objects.get(user=user)
+#            template = 'accounts/update_seller_profile.html'
+#    except User.DoesNotExist:
+#         return render(request, '404.html')
+#
+#

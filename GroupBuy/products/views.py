@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, HttpRequest
 from .models import Product, Review, Cart, CartItem
 from .forms import ProductForm
-from accounts.models import Profile_Seller
+from accounts.models import Profile_Seller, Profile_User
 from django.contrib import messages
 from orders.forms import OrderForm
 from django.db.models import Avg
@@ -23,15 +23,15 @@ def create_product_view(request:HttpRequest):
   if request.method == 'POST':
     product_form = ProductForm(request.POST, request.FILES)
     if product_form.is_valid():
-      product = product_form.save(commit=False)  # لا يتم الحفظ مباشرة
-      product.seller = request.user  # تعيين البائع
+      product = product_form.save(commit=False) 
+      product.seller = request.user  
       product_form.save()
       return redirect('main:home_view')
     else:
       print(product_form.errors)
       return HttpResponse("Invalid form")
 
-  return render(request, 'products/create_product.html', {'product_form':product_form})
+  return render(request, 'products/create_product.html', {'product_form':product_form, 'CategoryChoices': reversed(Product.CategoryChoices.choices),})
 
 def all_product_view(request:HttpRequest):
   # Get all products
@@ -44,6 +44,8 @@ def product_detail_view(request:HttpRequest, product_id:int):
   # Get product by id
   product = Product.objects.get(id=product_id)
   reviews = Review.objects.filter(product=product)
+  related_product = Product.objects.filter(category=product.category).exclude(id=product_id).order_by('?')[:4]
+
   form = OrderForm(request.POST or None)
 
   if form.is_valid():
@@ -55,7 +57,7 @@ def product_detail_view(request:HttpRequest, product_id:int):
   print(avg)
    
 
-  return render(request, 'products/product_detail.html', {"product":product, 'reviews':reviews, 'form':form, "average_rating":avg["rating__avg"]})
+  return render(request, 'products/product_detail.html', {"product":product, 'reviews':reviews, 'related_products': related_product,  'form':form, "average_rating":avg["rating__avg"]})
 
 def product_update_view(request:HttpRequest, product_id:int):
   if not request.user.is_authenticated:
@@ -64,11 +66,17 @@ def product_update_view(request:HttpRequest, product_id:int):
   if not Profile_Seller.objects.filter(user=request.user).exists():
       messages.error(request, "Only sellers can update products.", "alert-danger")
       return redirect('main:home_view')
+  try:
+      product = Product.objects.get(id=product_id)
 
+  except Product.DoesNotExist:
+      messages.error(request, "Product not found.", "alert-danger")
+      return redirect('main:home_view')
 
-  # Get product by id
-
-  product = Product.objects.get(id=product_id)
+  
+  if product.seller != request.user:
+      messages.error(request, "You can only update your own products.", "alert-danger")
+      return redirect('main:home_view')
 
   if request.method == "POST":
     product.name = request.POST['name']
@@ -96,6 +104,7 @@ def product_delete_view(request:HttpRequest, product_id:int):
 
   # Delete product by id
   product = Product.objects.get(pk=product_id)
+
   product.delete()
   return redirect("main:home_view")
 
@@ -104,6 +113,8 @@ def add_review_view(request:HttpRequest, product_id):
    if not request.user.is_authenticated:
       messages.error(request, "Only registered user can add review", "alert-danger")
       return redirect("accounts:sign_in")
+   
+
    if request.method == 'POST':
       product_object = Product.objects.get(pk=product_id)
       new_review = Review(product=product_object,user=request.user, comment=request.POST['comment'], rating=request.POST['rating'])
@@ -116,12 +127,19 @@ def add_review_view(request:HttpRequest, product_id):
 
 
 def toggle_favorite_view(request: HttpRequest, product_id: int):
-    if not request.user.is_authenticated:
+    if not request.user.is_authenticated :
         messages.error(request, "You must be logged in to manage favorites.", "alert-danger")
         return redirect("accounts:sign_in")
+    
+    if not Profile_User.objects.filter(user=request.user).exists():
+          messages.error(request, "Only User can favorite products.", "alert-danger")
+          return redirect('main:home_view')
+
 
     try:
         product = Product.objects.get(id=product_id)
+
+
 
         if product.favorited_by.filter(id=request.user.id).exists():
             product.favorited_by.remove(request.user)
@@ -142,6 +160,9 @@ def favorite_products_view(request: HttpRequest):
     if not request.user.is_authenticated:
         messages.error(request, "You must be logged in to view your favorites.", "alert-danger")
         return redirect("accounts:sign_in")
+    if not Profile_User.objects.filter(user=request.user).exists():
+          messages.error(request, "Only User can view favorite products.", "alert-danger")
+          return redirect('main:home_view')
 
     try:
         favorite_products = request.user.favorite_products.all()
@@ -156,9 +177,12 @@ def favorite_products_view(request: HttpRequest):
 
 def cart_view(request: HttpRequest):
     """عرض محتويات السلة للمستخدم."""
-    if not request.user.is_authenticated:
+    if not request.user.is_authenticated :
         messages.error(request, "You must be logged in to view your cart.", "alert-danger")
         return redirect("accounts:sign_in")
+    if not Profile_User.objects.filter(user=request.user).exists():
+          messages.error(request, "Only User can view cart.", "alert-danger")
+          return redirect('main:home_view')
 
     cart, created = Cart.objects.get_or_create(user=request.user)
     return render(request, "cart/cart_view.html", {"cart": cart})
@@ -168,6 +192,10 @@ def add_to_cart_view(request: HttpRequest, product_id: int):
     if not request.user.is_authenticated:
         messages.error(request, "You must be logged in to add items to your cart.", "alert-danger")
         return redirect("accounts:sign_in")
+    
+    if not Profile_User.objects.filter(user=request.user).exists():
+          messages.error(request, "Only User can add to cart.", "alert-danger")
+          return redirect('main:home_view')
 
     try:
         with transaction.atomic():  # بدء معاملة قاعدة البيانات
@@ -218,7 +246,6 @@ def increase_cart_quantity_view(request: HttpRequest, product_id: int):
     if not request.user.is_authenticated:
         messages.error(request, "You must be logged in to modify your cart.", "alert-danger")
         return redirect("accounts:sign_in")
-
     try:
         with transaction.atomic():
             cart = get_object_or_404(Cart, user=request.user)
@@ -258,3 +285,116 @@ def decrease_cart_quantity_view(request: HttpRequest, product_id: int):
         messages.error(request, "An error occurred while updating quantity.", "alert-danger")
 
     return redirect("products:cart_view")
+
+
+#def search_products_view(request: HttpRequest):
+#    """عرض نتائج البحث عن منتجات."""
+#    if "search" in request.GET and len(request.GET["search"]) >= 3:
+#        products = Product.objects.filter(name__icontains=request.GET["search"])
+#
+#        if "order_by" in request.GET and request.GET["order_by"] == "category":
+#            products = products.order_by("category")
+#        elif "order_by" in request.GET and request.GET["order_by"] == "price":
+#            products = products.order_by("-price")
+#    else:
+#        products = []
+#
+#    return render(request, "products/search_products.html", {"products": products})
+#
+
+#def search_products_view(request: HttpRequest):
+#    all_products = Product.objects.all()
+#
+#    search_query = request.GET.get('search', '')
+#    category_filter = request.GET.get('category', '')
+#    #brand_filter = request.GET.get('brand', '')  # فلتر البراند
+#    #order_by = request.GET.get('order_by', '')
+#    #brands = []
+#
+#    # تطبيق فلتر البحث إذا تم إدخال نص البحث
+#    if search_query:
+#        all_products = all_products.filter(name__icontains=search_query)
+#
+#    # تطبيق فلتر التصنيف إذا تم اختيار تصنيف
+#    if category_filter:
+#        all_products = all_products.filter(category=category_filter)
+#    #if brand_filter:
+#    #    all_products = all_products.filter(brand__name=brand_filter)  # فلتر البراند بناءً على الاسم
+#
+#
+#    # ترتيب المنتجات إذا تم تحديد ترتيب
+#    #if order_by:
+#    #    if order_by == 'category':
+#    #        all_products = all_products.order_by('category')
+#    #    elif order_by == 'price':
+#    #        all_products = all_products.order_by('-price')
+#
+#    return render(request, 'products/search_products.html', {
+#        'products': all_products,
+#        #'brand_filter': brand_filter,
+#
+#        'search_query': search_query,
+#        'category_filter': category_filter,
+#        #'order_by': order_by
+#    })
+
+#def search_products_view(request: HttpRequest):
+#    all_products = Product.objects.all()
+#    selected_group_price = request.GET.get('group_price', '')
+#
+#    search_query = request.GET.get('search', '')
+#    category_filter = request.GET.get('category', '')
+#
+#        # الحصول على جميع أسعار القروب المتاحة (مرتبة تصاعديًا بدون تكرار)
+#    available_group_prices = (
+#        Product.objects.filter(group_price__isnull=False)
+#        .values_list('group_price', flat=True)
+#        .distinct()
+#        .order_by('group_price')
+#    )
+#
+#
+#    if search_query:
+#        all_products = all_products.filter(name__icontains=search_query)
+#
+#    if category_filter:
+#        all_products = all_products.filter(category=category_filter)
+#
+#    if selected_group_price:
+#        all_products = all_products.filter(group_price=selected_group_price)
+#
+#
+#
+#
+#    return render(request, 'products/search_products.html', {
+#        'products': all_products,
+#        'search_query': search_query,
+#        'category_filter': category_filter,
+#        'selected_group_price': selected_group_price,
+#        'available_group_prices': available_group_prices,
+#
+#    })
+
+def search_products_view(request: HttpRequest):
+    all_products = Product.objects.all()
+
+    search_query = request.GET.get('search', '')
+    category_filter = request.GET.get('category', '')
+    sort_by_group_price = request.GET.get('group_price_sort', '')
+
+    if search_query:
+        all_products = all_products.filter(name__icontains=search_query)
+
+    if category_filter:
+        all_products = all_products.filter(category=category_filter)
+
+    if sort_by_group_price:
+        all_products = all_products.filter(group_price__isnull=False).exclude(group_price=0).order_by('group_price')
+
+
+    return render(request, 'products/search_products.html', {
+        'products': all_products,
+        'search_query': search_query,
+        'category_filter': category_filter,
+        'sort_by_group_price': sort_by_group_price,
+    })

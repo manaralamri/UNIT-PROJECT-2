@@ -1,23 +1,24 @@
+
 from django.shortcuts import render, redirect, get_object_or_404, reverse
 from django.http import HttpRequest, HttpResponse, Http404
-from .models import Order, GroupPurchase
-from .forms import OrderForm
-from products.models import Product
 from django.contrib import messages
-from django.db.models import Count
-from django.core.cache import cache
-from django.contrib.auth.decorators import login_required
 from django.db import transaction
+from django.utils import timezone
+from datetime import timedelta
+from django.core.cache import cache
+from .models import Product, GroupPurchase, Order
+from .forms import OrderForm
+from accounts.models import Profile_User, Profile_Seller
 
 
 def check_group_purchase_availability(group_purchase, product):
-    """التحقق من أن غرفة الشراء الجماعي لا تزال مفتوحة ومتاحة"""
+    """ Verify that the group buying room is still open and available."""
     cache_key = f"group_purchase_{group_purchase.id}_availability"
     is_available = cache.get(cache_key)
     
     if is_available is None:
         is_available = product.quantity > 0 and group_purchase.participants.count() < product.max_participants
-        cache.set(cache_key, is_available, timeout=60)  # تخزين النتيجة لمدة 60 ثانية
+        cache.set(cache_key, is_available, timeout=60) 
     
     if not is_available:
         group_purchase.is_active = False
@@ -28,9 +29,16 @@ def check_group_purchase_availability(group_purchase, product):
 
 
 def create_order_view(request, product_id):
+    if not request.user.is_authenticated:
+        messages.error(request, "You must be logged in to add items to your cart.", "alert-danger")
+        return redirect("accounts:sign_in")
+
+    if not Profile_User.objects.filter(user=request.user).exists():
+          messages.error(request, "Only User can order.", "alert-danger")
+          return redirect('main:home_view')
+
     product = get_object_or_404(Product, id=product_id)
 
-    # تحقق من الكمية المتاحة للمنتج
     if product.quantity <= 0:
         messages.error(request, "Sorry, the product is out of stock", "alert-danger")
         return redirect('products:product_detail_view', product_id=product.id)
@@ -45,10 +53,10 @@ def create_order_view(request, product_id):
                 order.order_type = Order.OrderType.INDIVIDUAL
                 order.participants = 1
                 order.save()
-                messages.success(request, "تم إنشاء الطلب الفردي بنجاح!")
-                return redirect('orders:order_detail', order_id=order.id)  # توجيه المستخدم إلى تفاصيل الطلب
+                messages.success(request, "Individual order created successfully!" , "alert-success")
+                return redirect('orders:order_detail', order_id=order.id) 
         else:
-            messages.error(request, "حدث خطأ أثناء إنشاء الطلب.")
+            messages.error(request, "An error occurred while creating the request.", "alert-danger")
     else:
         form = OrderForm()
 
@@ -57,24 +65,28 @@ def create_order_view(request, product_id):
 
 
 def create_group_purchase(request, product_id):
-    """إنشاء غرفة شراء جماعي وإعادة التوجيه إلى تفاصيلها"""
-    product = get_object_or_404(Product, id=product_id)
+    """Create a group buying room and redirect to its details."""
+    if not request.user.is_authenticated:
+        messages.error(request, "You must be logged in to add items to your cart.", "alert-danger")
+        return redirect("accounts:sign_in")
 
-    # التحقق من أن المنتج يحتوي على الكمية المتاحة
+    if not Profile_User.objects.filter(user=request.user).exists():
+          messages.error(request, "Only User can order for group.", "alert-danger")
+          return redirect('main:home_view')
+
+    #product = get_object_or_404(Product, id=product_id)
+    product = Product.objects.get(id=product_id)
+
     if product.quantity <= 0:
         messages.error(request, "Unable to create a group purchase room. The product is out of stock in Database", "alert-danger")
         return redirect('products:product_detail_view', product_id=product.id)
 
-    # استخدام معاملة لضمان صحة العملية
     if request.method == 'POST':
         with transaction.atomic():
-            # التحقق من الكمية المتاحة في إطار المعاملة
             if product.quantity > 0:
-                # إنشاء غرفة الشراء الجماعي
                 group_purchase = GroupPurchase.objects.create(product=product)
-                messages.success(request, "تم إنشاء غرفة الشراء الجماعي بنجاح!")
+                messages.success(request, "Group buying room created successfully!", "alert-success")
 
-                # إنشاء الرابط الخاص للغرفة
                 group_purchase_link = request.build_absolute_uri(
                     reverse('orders:group_purchase_detail', args=[group_purchase.id])
                 )
@@ -84,27 +96,29 @@ def create_group_purchase(request, product_id):
                     'group_purchase_link': group_purchase_link,
                 })
             else:
-                messages.error(request, "المنتج لا يحتوي على الكمية الكافية لإنشاء غرفة شراء جماعي.", "alert-danger")
+                messages.error(request, "The product does not have enough quantity to create a group buying room.", "alert-danger")
                 return redirect('products:product_detail_view', product_id=product.id)
 
     return render(request, 'orders/create_group_purchase.html', {'product': product})
 
 def join_group_purchase(request, group_purchase_id):
     group_purchase = get_object_or_404(GroupPurchase, id=group_purchase_id)
+
+    #group_purchase = GroupPurchase.objects.get(id=group_purchase_id)
     product = group_purchase.product
     
     if not check_group_purchase_availability(group_purchase, product):
-        messages.error(request, "عذرًا، هذا المنتج غير متوفر حاليًا أو تم الوصول للحد الأقصى من المشاركين!")
+        messages.error(request, "Sorry, this product is currently unavailable or the maximum number of participants has been reached!", "alert-danger")
         return redirect('orders:group_purchase_detail', group_purchase_id=group_purchase.id)
     
     if request.user in group_purchase.participants.all():
-        messages.warning(request, "أنت بالفعل مشارك في هذا الشراء الجماعي!")
+        messages.warning(request, "You are already a participant in this group purchase!", "alert-warning")
     else:
         with transaction.atomic():
             group_purchase.add_participant(request.user)
             product.quantity -= 1
             product.save()
-            messages.success(request, "تم الانضمام إلى الشراء الجماعي بنجاح!")
+            messages.success(request, "Group purchase successfully joined!", "alert-success")
         
         if group_purchase.participants.count() >= product.max_participants or product.quantity <= 0:
             group_purchase.is_active = False
@@ -114,47 +128,71 @@ def join_group_purchase(request, group_purchase_id):
 
 
 def group_purchase_detail(request, group_purchase_id):
-    """عرض تفاصيل غرفة الشراء الجماعي"""
+    """View group buying room details"""
+    
     group_purchase = get_object_or_404(GroupPurchase, id=group_purchase_id)
+    
+    #group_purchase = GroupPurchase.objects.get(id=group_purchase_id)
+    if group_purchase.expiration_time:
+        group_purchase.expiration_time = timezone.localtime(group_purchase.expiration_time)
+    else:
+        #group_purchase.expiration_time = timezone.localtime(timezone.now() + timedelta(hours=2))
+        group_purchase.expiration_time = timezone.localtime(timezone.now() + timedelta(minutes=1))
+        group_purchase.save()
+
     return render(request, 'orders/group_purchase_detail.html', {'group_purchase': group_purchase})
-
-def create_order_in_group(request, group_purchase_id):
-    group_purchase = get_object_or_404(GroupPurchase, id=group_purchase_id)
-    
-    if not group_purchase.is_active:
-        messages.error(request, "هذا الشراء الجماعي مغلق!")
-        return redirect('orders:group_purchase_detail', group_purchase_id=group_purchase.id)
-    
-    if request.method == 'POST':
-        try:
-            quantity = int(request.POST.get('quantity', 1))
-        except ValueError:
-            messages.error(request, "الكمية غير صحيحة!")
-            return redirect('orders:group_purchase_detail', group_purchase_id=group_purchase.id)
-        
-        price = group_purchase.product.group_price or group_purchase.product.price
-        total_price = quantity * price
-        
-        with transaction.atomic():
-            order = Order.objects.create(
-                user=request.user,
-                product=group_purchase.product,
-                quantity=quantity,
-                total_price=total_price,
-                order_type=Order.OrderType.GROUP,
-                group_purchase=group_purchase
-            )
-            group_purchase.add_participant(request.user)
-            messages.success(request, "تم إنشاء طلبك في الشراء الجماعي بنجاح!")
-        
-        return redirect('orders:order_detail', order_id=order.id)
-    
-    return render(request, 'orders/create_order_in_group.html', {'group_purchase': group_purchase})
-
 
 def order_detail(request, order_id):
     order = get_object_or_404(Order, id=order_id)
+    #order = Order.objects.get(id=order_id)
     return render(request, 'orders/order_detail.html', {'order': order})
+
+
+
+#def group_purchase_detail(request, group_purchase_id):
+#    """View group buying room details"""
+#
+#    if not group_purchase.expiration_time:
+#        group_purchase.expiration_time = timezone.now() + timedelta(hours=2)
+#        group_purchase.save()
+#
+#    group_purchase = get_object_or_404(GroupPurchase, id=group_purchase_id)
+#    return render(request, 'orders/group_purchase_detail.html', {'group_purchase': group_purchase})
+
+#def create_order_in_group(request, group_purchase_id):
+#    group_purchase = get_object_or_404(GroupPurchase, id=group_purchase_id)
+#    
+#    if not group_purchase.is_active:
+#        messages.error(request, "This group buy is closed!", "alert-danger")
+#        return redirect('orders:group_purchase_detail', group_purchase_id=group_purchase.id)
+#    
+#    if request.method == 'POST':
+#        try:
+#            quantity = int(request.POST.get('quantity', 1))
+#        except ValueError:
+#            messages.error(request, "The quantity is incorrect!", "alert-danger")
+#            return redirect('orders:group_purchase_detail', group_purchase_id=group_purchase.id)
+#        
+#        price = group_purchase.product.group_price or group_purchase.product.price
+#        total_price = quantity * price
+#        
+#        with transaction.atomic():
+#            order = Order.objects.create(
+#                user=request.user,
+#                product=group_purchase.product,
+#                quantity=quantity,
+#                total_price=total_price,
+#                order_type=Order.OrderType.GROUP,
+#                group_purchase=group_purchase
+#            )
+#            group_purchase.add_participant(request.user)
+#            messages.success(request, "Your group purchase order has been successfully created!", "alert-success")
+#        
+#        return redirect('orders:order_detail', order_id=order.id)
+#    
+#    return render(request, 'orders/create_order_in_group.html', {'group_purchase': group_purchase})
+#
+
 
 
 # this is working 

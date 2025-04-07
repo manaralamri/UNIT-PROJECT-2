@@ -6,7 +6,9 @@
         <div class="col-12 col-sm-6 col-md-3 mb-4">
 
             <div class="d-flex flex-column justify-content-start align-items-start h-100 p-4 shadow gap-2">
+                {% if request.user.is_authenticated and request.user.profile_user %}
                <a href="{% url 'products:toggle_favorite_view' product.id %}"><i class="bi bi-heart"></i></a>
+               {%endif%}
               
              
                 <img src="{{ product.image.url }}" class="w-100 h-100 object-fit-cover" alt="{{ product.name }}" style="max-height: 200px;"/>

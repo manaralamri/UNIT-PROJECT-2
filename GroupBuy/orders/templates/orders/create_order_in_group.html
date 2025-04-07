@@ -17,7 +17,7 @@
 
     <h3>انضم إلى الشراء الجماعي:</h3>
 
-    <form method="POST" action="{% url 'orders:'%}">
+    <form method="POST" action="">
         {% csrf_token %}
         <button type="submit">انضم إلى الشراء الجماعي</button>
     </form>
@@ -35,23 +35,3 @@
 </body>
 </html>-->
 
-<!DOCTYPE html>
-<html lang="ar">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إنشاء طلب داخل شراء جماعي</title>
-</head>
-<body>
-    <h1>طلب داخل شراء جماعي: {{ group_purchase.product.name }}</h1>
-    
-    <form method="post">
-        {% csrf_token %}
-        <label for="quantity">الكمية:</label>
-        <input type="number" name="quantity" min="1" required>
-        <button type="submit">إتمام الطلب</button>
-    </form>
-
-    <a href="{% url 'orders:group_purchase_detail' group_purchase.id %}">العودة إلى الشراء الجماعي</a>
-</body>
-</html>

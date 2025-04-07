@@ -2,36 +2,66 @@
 {% block content %}
 
 
-<div class="container mt-5">
+<!--<div class="container mt-5">
     <div class="card shadow-lg">
         <div class="card-header bg-primary text-white text-center">
-            <h3>طلب منتج: {{ product.name }}</h3>
+            <h3>Request a product: {{ product.name }}</h3>
         </div>
         <div class="card-body">
             <p class="text-muted">{{ product.description }}</p>
-            <p class="fw-bold">السعر: {{ product.price }} ريال</p>
+            <p class="fw-bold">price: {{ product.price }}</p>
 
             <form method="post" action="{% url 'orders:create_order_view' product.id %}">
                 {% csrf_token %}
                 
-                <!-- حقل مخفي لنوع الطلب (فردي) -->
                 <input type="hidden" name="order_type" value="individual">
                 <input type="hidden" name="participants" value="1">
 
 
                 <div class="mb-3">
-                    <label for="id_quantity" class="form-label">الكمية:</label>
+                    <label for="id_quantity" class="form-label">quantity:</label>
                     {{ form.quantity }}
                 </div>
 
-                <button type="submit" class="btn btn-primary w-100">إتمام الطلب</button>
+                <button type="submit" class="btn btn-primary w-100">Complete the order</button>
             </form>
         </div>
     </div>
 
     <div class="text-center mt-4">
-        <a href="{% url 'products:all_product_view' %}" class="btn btn-secondary">العودة للمنتجات</a>
+        <a href="{% url 'products:all_product_view' %}" class="btn btn-secondary">Back to products</a>
+    </div>
+</div>-->
+
+<div class="container mt-5 d-flex justify-content-center">
+    <div class="card shadow-lg rounded-3" style="max-width: 500px; width: 100%;">
+        <div class="card-header custom-dark-blue text-center">
+            <h3 class="mb-0">Request a product: {{ product.name }}</h3>
+        </div>
+        <div class="card-body">
+            <p class="text-muted text-center">{{ product.description }}</p>
+            <p class="fw-bold text-center">Price: <span class="text-success">${{ product.price }}</span></p>
+
+            <form method="post" action="{% url 'orders:create_order_view' product.id %}">
+                {% csrf_token %}
+                
+                <input type="hidden" name="order_type" value="individual">
+                <input type="hidden" name="participants" value="1">
+
+                <div class="mb-3  text-center">
+                    <label for="id_quantity" class="form-label fw-bold">Quantity:</label>
+                    {{ form.quantity }}
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 shadow-sm btn-lg">Complete the order</button>
+            </form>
+        </div>
     </div>
 </div>
+
+<div class="text-center mt-4">
+    <a href="{% url 'products:all_product_view' %}" class="btn btn-outline-secondary btn-lg shadow-sm">Back to products</a>
+</div>
+
 
 {% endblock%}

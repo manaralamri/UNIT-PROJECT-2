@@ -1,0 +1,86 @@
+{% extends 'main/base.html' %}
+
+{% block title %}Search Products{% endblock %}
+
+{% block content %}
+{% if products %}
+<h1>Search Results ({{ products.count }})</h1>
+<h5>Results for: "{{ request.GET.search }}"</h5>
+
+<div class="d-flex justify-content-end">
+    <form action="{% url 'products:search_products_view' %}" method="GET">
+
+        <div class="d-flex gap-3">
+            <!-- Search input -->
+            <input type="search" class="form-control" value="{{ request.GET.search }}" name="search" placeholder="Search products..." />
+
+            <select name="category" class="form-select">
+              <option value="">Select Category</option>
+              <option value="Makeup" {% if request.GET.category == 'Makeup' %} selected {% endif %}>Makeup</option>
+              <option value="Perfumes" {% if request.GET.category == 'Perfumes' %} selected {% endif %}>Perfumes</option>
+              <option value="Brands" {% if request.GET.category == 'Brands' %} selected {% endif %}>Brands</option>
+              <option value="Skincare" {% if request.GET.category == 'Skincare' %} selected {% endif %}>Skincare</option>
+              <option value="Haircare" {% if request.GET.category == 'Haircare' %} selected {% endif %}>Haircare</option>
+              <option value="Electronics" {% if request.GET.category == 'Electronics' %} selected {% endif %}>Electronics</option>
+          </select>
+
+                      <!-- Filter by Group Price 
+                      <select name="group_price" class="form-select">
+                        <option value="">Select Group Price</option>
+                        {% for price in available_group_prices %}
+                        <option value="{{ price }}" {% if request.GET.group_price == price|stringformat:".2f" %} selected {% endif %}>
+                            {{ price }} ريال
+                        </option>
+                        {% endfor %}
+                    </select>-->
+
+                                <!-- ترتيب حسب سعر القروب -->
+            <select name="group_price_sort" class="form-select">
+                <option value="">Sort by Group Price</option>
+                <option value="asc" {% if request.GET.group_price_sort %} selected {% endif %}>Lowest to Highest</option>
+            </select>
+
+        
+
+          <!--{% if category_filter == "Brands" and brands %}
+          <form method="GET" action="{% url 'products:search_products_view' %}">
+              <input type="hidden" name="category" value="Brands">
+              <select name="brand" onchange="this.form.submit()">
+                  <option value="">All Brands</option>
+                  {% for brand in brands %}
+                      <option value="{{ brand }}" {% if brand == brand_filter %}selected{% endif %}>{{ brand }}</option>
+                  {% endfor %}
+              </select>
+          </form>
+      {% endif %}-->
+                          
+            <!-- Order by dropdown 
+            <select name="order_by" class="form-select">
+                <option value="">Order By</option>
+                <option value="category" {% if request.GET.order_by == 'category' %} selected {% endif %}>Category</option>
+                <option value="price" {% if request.GET.order_by == 'price' %} selected {% endif %}>Price (High to Low)</option>
+            </select>-->
+
+            <input type="submit" value="Apply" class="btn btn-primary"/>
+        </div>
+
+    </form>
+
+</div>
+
+{% else %}
+<!--<p class="bg-warning p-3 rounded">No results found for your search "{{ request.GET.search }}"</p>-->
+<div class="text-center my-5">
+  <img src="https://cdni.iconscout.com/illustration/premium/thumb/no-result-found-illustration-download-in-svg-png-gif-file-formats--find-not-character-issue-empty-page-marketing-pack-business-illustrations-4552272.png?f=webp" 
+       alt="No results" class="img-fluid" style="max-width: 200px;">
+  <h4 class="mt-3 text-danger fw-bold">No results found for your search"{{ request.GET.search }}"</h4>
+  <a href="{% url 'products:search_products_view' %}" class="btn btn-primary mt-3">
+    View all products
+  </a>
+</div>
+
+{% endif %}
+
+{% include 'products/product_list.html'%}
+
+{% endblock %}

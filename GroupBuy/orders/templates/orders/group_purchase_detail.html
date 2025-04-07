@@ -1,47 +1,21 @@
 {% extends 'main/base.html' %}
 {% block content %}
 
-    <!--<h1>شراء جماعي: {{ group_purchase.product.name }}</h1>
-    <h3>عدد المشاركين: {{ group_purchase.participants.count }} / {{ group_purchase.product.max_participants }}</h3>
 
-    <p>يمكنك مشاركة الرابط التالي مع الأعضاء الآخرين:</p>
-    <input type="text" value="{{ group_purchase_link }}" readonly>
-    
-    <p><strong>المشاركون حتى الآن:</strong></p>
-    <ul>
-        {% for participant in group_purchase.participants.all %}
-            <li>{{ participant.username }}</li>
-        {% empty %}
-            <li>لا يوجد مشاركين حتى الآن</li>
-        {% endfor %}
-    </ul>
-    
-    <p><strong>الحالة:</strong> {% if group_purchase.is_active %} مفتوح ✅ {% else %} مغلق ❌ {% endif %}</p>
-    
-    {% if group_purchase.participants.count < group_purchase.product.max_participants %}
-    <a href="{% url 'orders:join_group_purchase' group_purchase.id %}" class="btn btn-primary">
-        👥 الانضمام إلى الشراء الجماعي
-    </a>
-{% else %}
-    <p class="text-danger">تم الوصول للحد الأقصى من المشاركين!</p>
-{% endif %}
-        
-    <a href="{% url 'products:product_detail_view' group_purchase.product.id %}">العودة إلى المنتج</a>-->
-
-
-<div class="container my-5">
+<!--<div class="container my-5">
     <div class="card shadow-lg">
                 
         <div class="card-body">
-            <h1 class="text-center text-primary mb-4">شراء جماعي: {{ group_purchase.product.name }}</h1>
-            
-            <h3 class="text-center">عدد المشاركين: 
+            <h1 class="text-center text-primary mb-4">Group purchase:{{ group_purchase.product.name }}</h1>
+            <p><strong>Expiration Time:</strong> {{ group_purchase.expiration_time }}</p>
+
+            <h3 class="text-center">Number of participants: 
                 <span class="badge bg-info">{{ group_purchase.participants.count }}</span> /
                 <span class="badge bg-secondary">{{ group_purchase.product.max_participants }}</span>
             </h3>
 
             <div class="my-4">
-                <p class="text-center">يمكنك مشاركة الرابط التالي مع الأعضاء الآخرين:</p>
+                <p class="text-center">You can share the following link with other members.:</p>
                 <div class="input-group mb-3">
                     <input type="text" class="form-control" value="{{ group_purchase_link }}" readonly>
                     <button class="btn btn-outline-secondary" onclick="navigator.clipboard.writeText('{{ group_purchase_link }}')">نسخ</button>
@@ -49,22 +23,22 @@
             </div>
               
             <div class="mb-4">
-                <p><strong>المشاركون حتى الآن:</strong></p>
+                <p><strong>Participants so far:</strong></p>
                 <ul class="list-group">
                     {% for participant in group_purchase.participants.all %}
                         <li class="list-group-item">{{ participant.username }}</li>
                     {% empty %}
-                        <li class="list-group-item text-muted">لا يوجد مشاركين حتى الآن</li>
+                        <li class="list-group-item text-muted">There are no participants yet.</li>
                     {% endfor %}
                 </ul>
             </div>
 
             <div class="text-center mb-4">
-                <p class="fw-bold">الحالة: 
+                <p class="fw-bold">condition: 
                     {% if group_purchase.is_active %}
-                        <span class="badge bg-success">مفتوح ✅</span>
+                        <span class="badge bg-success">open ✅</span>
                     {% else %}
-                        <span class="badge bg-danger">مغلق ❌</span>
+                        <span class="badge bg-danger">closed ❌</span>
                     {% endif %}
                 </p>
             </div>
@@ -72,18 +46,118 @@
             <div class="text-center">
                 {% if group_purchase.participants.count < group_purchase.product.max_participants %}
                     <a href="{% url 'orders:join_group_purchase' group_purchase.id %}" class="btn btn-primary">
-                        👥 الانضمام إلى الشراء الجماعي
+                        👥 Join the group buy
                     </a>
                 {% else %}
-                    <p class="text-danger fw-bold">تم الوصول للحد الأقصى من المشاركين!</p>
+                    <p class="text-danger fw-bold">The maximum number of participants has been reached!</p>
                 {% endif %}
             </div>
 
             <div class="text-center mt-4">
-                <a href="{% url 'products:product_detail_view' group_purchase.product.id %}" class="btn btn-info">العودة إلى المنتج</a>
+                <a href="{% url 'products:product_detail_view' group_purchase.product.id %}" class="btn btn-info">Back to product</a>
+            </div>
+        </div>
+    </div>
+</div>-->
+
+
+<div class="container my-5">
+    <div class="card shadow-lg">
+        <div class="card-body">
+            <!-- Countdown Timer -->
+            <div class="text-center mt-4">
+                <div class="badge bg-primary p-4 rounded-circle" style="font-size: 1.5rem;" id="countdown"></div>
+            </div>
+
+            <h1 class="text-center text-primary mb-4">Group purchase: {{ group_purchase.product.name }}</h1>
+
+
+            <h3 class="text-center">Number of participants: 
+                <span class="badge bg-info" id="participants-count">{{ group_purchase.participants.count }}</span> / 
+                <span class="badge bg-secondary">{{ group_purchase.product.max_participants }}</span>
+            </h3>
+
+            <div class="my-4">
+                <p class="text-center">You can share the following link with other members:</p>
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" value="{{ group_purchase_link }}" readonly>
+                    <button class="btn btn-outline-secondary" onclick="navigator.clipboard.writeText('{{ group_purchase_link }}')">نسخ</button>
+                </div>
+            </div>
+              
+            <div class="mb-4">
+                <p><strong>Participants so far:</strong></p>
+                <ul class="list-group">
+                    {% for participant in group_purchase.participants.all %}
+                        <li class="list-group-item">{{ participant.username }}</li>
+                    {% empty %}
+                        <li class="list-group-item text-muted">There are no participants yet.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div class="text-center mb-4">
+                <p class="fw-bold">Condition: 
+                    {% if group_purchase.is_active %}
+                        <span class="badge bg-success">open ✅</span>
+                    {% else %}
+                        <span class="badge bg-danger">closed ❌</span>
+                    {% endif %}
+                </p>
+            </div>
+
+            <div class="text-center">
+                {% if group_purchase.participants.count < group_purchase.product.max_participants %}
+                    <a href="{% url 'orders:join_group_purchase' group_purchase.id %}" class="btn btn-primary">
+                        👥 Join the group buy
+                    </a>
+                {% else %}
+                    <p class="text-danger fw-bold">The maximum number of participants has been reached!</p>
+                {% endif %}
+            </div>
+
+            <div class="text-center mt-4">
+                <a href="{% url 'products:product_detail_view' group_purchase.product.id %}" class="btn btn-info">Back to product</a>
             </div>
         </div>
     </div>
 </div>
 
+<script>
+    let expirationTime = new Date("{{ group_purchase.expiration_time|date:'c' }}").getTime();
+    const countdownElement = document.getElementById('countdown');
+    const participantsCountElement = document.getElementById("participants-count");
+    const maxParticipants = parseInt("{{ group_purchase.product.max_participants }}");
+    
+    function updateCountdown() {
+        const now = new Date().getTime();
+        const timeLeft = expirationTime - now;
+
+        // تحقق مما إذا كان العدد قد اكتمل
+        if (parseInt(participantsCountElement.textContent) >= maxParticipants) {
+            countdownElement.innerHTML = "Expired";
+            clearInterval(timerInterval);
+            return;
+        }
+
+        if (timeLeft <= 0) {
+            countdownElement.innerHTML = "Expired";
+        } else {
+            const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+            countdownElement.innerHTML = `${minutes}m ${seconds}s`;
+        }
+    }
+
+    // تحديث العد كل ثانية
+    let timerInterval = setInterval(updateCountdown, 1000);
+
+    // إعادة تعيين المؤقت عند تحديث الصفحة أو عند بدء طلب جديد
+    function resetTimer(newExpirationTime) {
+        expirationTime = newExpirationTime;
+        clearInterval(timerInterval);
+        timerInterval = setInterval(updateCountdown, 1000);
+    }
+</script>
+    
 {% endblock %}

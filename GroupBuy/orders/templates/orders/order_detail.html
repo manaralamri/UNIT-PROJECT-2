@@ -1,10 +1,26 @@
 {% extends 'main/base.html' %}
 {% block content %}
 
-    <h1>تفاصيل الطلب</h1>
-    <p>المنتج: {{ order.product.name }}</p>
-    <p>الكمية: {{ order.quantity }}</p>
-    <p>السعر الإجمالي: {{ order.total_price }}</p>
-    <p>نوع الطلب: {% if order.order_type == "group" %}جماعي{% else %}فردي{% endif %}</p>
-
+    <div class="container mt-5 d-flex justify-content-center">
+        <div class="card shadow-lg rounded-3" style="max-width: 500px; width: 100%;">
+            <div class="card-header custom-dark-blue text-center text-white">
+                <h3 class="mb-0">Order Details</h3>
+            </div>
+            <div class="card-body">
+                <p class="fw-bold text-center">Product: <span class="text-primary">{{ order.product.name }}</span></p>
+                <p class="fw-bold text-center">Quantity: <span class="text-dark">{{ order.quantity }}</span></p>
+                <p class="fw-bold text-center">Total Price: <span class="text-success">${{ order.total_price }}</span></p>
+                <p class="fw-bold text-center">Order Type: 
+                    <span class="{% if order.order_type == 'group' %}text-danger{% else %}text-info{% endif %}">
+                        {% if order.order_type == "group" %}Group{% else %}Individual{% endif %}
+                    </span>
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="text-center mt-4">
+        <a href="{% url 'products:all_product_view' %}" class="btn btn-outline-secondary btn-lg shadow-sm">Back to Orders</a>
+    </div>
+    
 {% endblock %}

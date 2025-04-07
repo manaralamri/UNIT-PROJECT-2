@@ -102,16 +102,20 @@
         <ul class="navbar-nav ms-auto">
         <!-- أيقونة المفضلة -->
         <li class="nav-item">
+          {% if request.user.is_authenticated and request.user.profile_user %}
           <a class="nav-link  text-white" href="{% url 'products:favorite_products_view' %}">
             <i class="bi bi-heart" style="font-size: 1rem; margin-right: 3px;"></i> 
           </a>
+          {%endif%}
         </li>
 
         <!-- أيقونة السلة -->
         <li class="nav-item">
+          {% if request.user.is_authenticated and request.user.profile_user %}
           <a class="nav-link  text-white" href="{% url 'products:cart_view' %}">
             <i class="bi bi-cart" style="font-size: 1rem; margin-left: 3px;"></i> 
           </a>
+          {%endif%}
         </li>
 
 
@@ -195,7 +199,7 @@
             <h3 class="text-light">Let's get started!</h3>
           </div>
           <div class="ml-auto">
-            <a href="#" class="btn btn-dark rounded-0 py-3 px-5">Contact us</a>
+            <a href="{% url 'main:contact_view'%}" class="btn btn-dark rounded-0 py-3 px-5">Contact us</a>
           </div>
         </div>
         <div class="row">

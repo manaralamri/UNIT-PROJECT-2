@@ -1,8 +1,18 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-# Create your models here.
+
+
 class Product(models.Model):
+  class CategoryChoices(models.TextChoices):
+    MAKEUP = "Makeup", "Makeup"
+    PERFUMES = "Perfumes", "Perfumes"
+    BRANDS = "Brands", "Brands"
+    SKINCARE = "Skincare", "Skincare "
+    HAIRCARE = "Haircare", "Haircare"
+    ELECTRONICS = "Electronics", "Electronics"
+
+
   seller = models.ForeignKey(User, on_delete=models.CASCADE, related_name='products')
   name = models.CharField(max_length=255)
   price = models.DecimalField(max_digits=10, decimal_places=2)
@@ -11,8 +21,10 @@ class Product(models.Model):
   max_participants = models.PositiveIntegerField(default=5)  
   description = models.TextField()
   image = models.ImageField(upload_to="images/", default="images/default.jpg")
-  category = models.CharField(max_length=225)
+  #category = models.CharField(max_length=225)
+  category = models.CharField(max_length=250, choices=CategoryChoices.choices)
   brand = models.CharField(max_length=225)
+  #brand = models.ForeignKey(Brand, on_delete=models.CASCADE, related_name='products')
   colour = models.CharField(max_length=225)
   size = models.CharField(max_length=225)
   quantity = models.IntegerField()
