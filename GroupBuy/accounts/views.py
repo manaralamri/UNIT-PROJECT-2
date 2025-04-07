@@ -142,28 +142,6 @@ def profile_view(request: HttpRequest, user_name):
     return render(request, template, {'user': user, 'profile': profile})
 
 
-#def update_user_profile(request:HttpRequest):
-#    if not request.user.is_authenticated:
-#        messages.warning(request, 'Only registered users can update profile', 'alert-warning')
-#        return redirect('accounts:sign_in')
-#    if request.method == 'POST':
-#        try:
-#            with transaction.atomic():
-#                 user:User = request.user# هنا مايحتاج اجلبة من الداتا بيز objects.get
-#                 user.first_name = request.POST['first_name']
-#                 user.last_name = request.POST['last_name']
-#                 user.email = request.POST['email']
-#                 user.save()
-#
-#                 profile:Profile_User = user
-#                 if 'avatar' in request.FILES: Profile_User.avatar = request.FILES['avatar']
-#         
-#                 profile.save()
-#            messages.success(request, 'Profile updated successfully', 'alert-success')
-#        except Exception as e:
-#            messages.error(request, "Couldn't Profile updated ", "alert-danger")
-#            print(e)
-#    return render(request, 'accounts/update_profile.html')
 
 def update_user_profile(request: HttpRequest):
     if not request.user.is_authenticated:
@@ -196,31 +174,33 @@ def update_user_profile(request: HttpRequest):
 
     return render(request, 'accounts/update_profile.html')
 
-#def update_profile_view(request:HttpRequest):
-#    if request.method == 'POST':
-#        with transaction.atomic():
-#            user = request.user
-#            user.first_name = request.POST['first_name']
-#            user.last_name = request.POST['last_name']
-#            user.email = request.POST['email']
-#            user.save()
-#            if Profile_Seller.objects.filter(user=user).exists():
-#                    profile = Profile_Seller.objects.get(user=user)
-#            else:
-#                    profile, _ = Profile_User.objects.get_or_create(user=user)
+
+def update_seller_profile(request):
+    if request.method == 'POST':
+        try:
+            with transaction.atomic():
+                profile = request.user.profile_seller
+
+                profile.twitch_link = request.POST.get('twitch_link', profile.twitch_link)
+
+                profile.CR = request.POST.get('CR', profile.CR)
+
+                if 'avatar' in request.FILES:
+                    profile.avatar = request.FILES['avatar']
+
+                if 'CR_image' in request.FILES:
+                    profile.CR_image = request.FILES['CR_image']
+
+                profile.save()
+                messages.success(request, "Seller profile updated successfully", "alert-success")
+        except Exception as e:
+            print(e)
+            messages.error(request, "Couldn't update seller profile", "alert-danger")
+
+    return render(request, 'accounts/update_seller_profile.html')
+
 
 
 
             
 
-#def update_profile_view(request: HttpRequest, user_name):
-#    try:
-#        user = User.objects.get(useername = user_name)
-#        # تحقق مما إذا كان المستخدم بائعًا أو مستخدمًا عاديًا  
-#        if Profile_Seller.objects.filter(user=user).exists():
-#            profile = Profile_Seller.objects.get(user=user)
-#            template = 'accounts/update_seller_profile.html'
-#    except User.DoesNotExist:
-#         return render(request, '404.html')
-#
-#
