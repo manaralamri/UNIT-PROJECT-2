@@ -80,6 +80,9 @@ def create_group_purchase(request, product_id):
     if product.quantity <= 0:
         messages.error(request, "Unable to create a group purchase room. The product is out of stock in Database", "alert-danger")
         return redirect('products:product_detail_view', product_id=product.id)
+    if product.quantity <= 1:
+        messages.warning(request, "Group room cannot be created, only one product left.", "alert-warning")
+        return redirect('products:product_detail_view', product_id=product.id)
 
     if request.method == 'POST':
         with transaction.atomic():
@@ -127,39 +130,22 @@ def join_group_purchase(request, group_purchase_id):
     return redirect('orders:group_purchase_detail', group_purchase_id=group_purchase.id)
 
 
-#def group_purchase_detail(request, group_purchase_id):
-#    """View group buying room details"""
-#    
-#    group_purchase = get_object_or_404(GroupPurchase, id=group_purchase_id)
-#    
-#    #group_purchase = GroupPurchase.objects.get(id=group_purchase_id)
-#    if group_purchase.expiration_time:
-#        group_purchase.expiration_time = timezone.localtime(group_purchase.expiration_time)
-#    else:
-#        #group_purchase.expiration_time = timezone.localtime(timezone.now() + timedelta(hours=2))
-#        #group_purchase.expiration_time = timezone.localtime(timezone.now() + timedelta(minutes=1))
-#        group_purchase.expiration_time = timezone.now() + timedelta(seconds=15)
-#        print("time now:", timezone.now())
-#        print("time for room", group_purchase.expiration_time)
-#
-#
-#        group_purchase.save()
-#
-#    return render(request, 'orders/group_purchase_detail.html', {'group_purchase': group_purchase})
-
 def group_purchase_detail(request, group_purchase_id):
     """View group buying room details"""
-
+    
     group_purchase = get_object_or_404(GroupPurchase, id=group_purchase_id)
     
-    # إذا لم يكن الوقت قد مر بعد أو لم يكتمل العدد
-    if group_purchase.participants.count() >= group_purchase.product.max_participants:
-        # عندما يكتمل العدد، يتم حفظ القروب أو تحديث حالته
-        group_purchase.is_active = False
+    #group_purchase = GroupPurchase.objects.get(id=group_purchase_id)
+    if group_purchase.expiration_time:
+        group_purchase.expiration_time = timezone.localtime(group_purchase.expiration_time)
+    else:
+        #group_purchase.expiration_time = timezone.localtime(timezone.now() + timedelta(hours=2))
+        #group_purchase.expiration_time = timezone.localtime(timezone.now() + timedelta(minutes=1))
+        group_purchase.expiration_time = timezone.now() + timedelta(seconds=15)
+        print("time now:", timezone.now())
+        print("time for room", group_purchase.expiration_time)
 
-    # إذا كان الوقت قد انتهى
-    if group_purchase.expiration_time <= timezone.now():
-        group_purchase.is_active = False
+
         group_purchase.save()
 
     return render(request, 'orders/group_purchase_detail.html', {'group_purchase': group_purchase})

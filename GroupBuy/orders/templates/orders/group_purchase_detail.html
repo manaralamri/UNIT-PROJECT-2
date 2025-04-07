@@ -161,21 +161,4 @@
 
 </script>-->
     
-
-<script>
-    const serverTimeStr = "{{ timezone.now|date:'Y-m-d\\TH:i:sP' }}";
-    const serverTime = new Date(serverTimeStr);
-    const clientTime = new Date();
-
-    console.log("🕒 Server Time (Django):", serverTime);
-    console.log("🖥️ Client Time (Browser):", clientTime);
-
-    if (!isNaN(serverTime.getTime())) {
-        const diffSeconds = Math.floor((clientTime - serverTime) / 1000);
-        console.log("⏳ Difference in seconds:", diffSeconds);
-    } else {
-        console.log("⚠️ Server time is invalid. Raw string:", serverTimeStr);
-    }
-</script>
-
 {% endblock %}
