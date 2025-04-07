@@ -129,7 +129,6 @@ def profile_view(request: HttpRequest, user_name):
     try:
         user = User.objects.get(username=user_name)
         
-        # تحقق مما إذا كان المستخدم بائعًا أو مستخدمًا عاديًا
         if Profile_Seller.objects.filter(user=user).exists():
             profile = Profile_Seller.objects.get(user=user)
             template = 'accounts/seller_profile.html'
@@ -141,6 +140,33 @@ def profile_view(request: HttpRequest, user_name):
         return render(request, '404.html')
 
     return render(request, template, {'user': user, 'profile': profile})
+
+
+def update_user_profile(request:HttpRequest):
+    if not request.user.is_authenticated:
+        messages.warning(request, 'Only registered users can update profile', 'alert-warning')
+        return redirect('accounts:sign_in')
+    if request.method == 'POST':
+        try:
+            with transaction.atomic():
+                 user:User = request.user# هنا مايحتاج اجلبة من الداتا بيز objects.get
+                 user.first_name = request.POST['first_name']
+                 user.last_name = request.POST['last_name']
+                 user.email = request.POST['email']
+                 #Profile_User.user. = request.POST['address']
+                 #user.postal_code = request.POST['postal_code']
+                 #user.phone_number = request.POST['phone_number']
+                 #user.city = request.POST['city']
+                 user.save()
+                 profile:Profile_User = user
+                 if 'avatar' in request.FILES: Profile_User.avatar = request.FILES['avatar']
+         
+                 profile.save()
+            messages.success(request, 'Profile updated successfully', 'alert-success')
+        except Exception as e:
+            messages.error(request, "Couldn't Profile updated ", "alert-danger")
+            print(e)
+    return render(request, 'accounts/update_profile.html')
 
 
 #def update_profile_view(request:HttpRequest):
