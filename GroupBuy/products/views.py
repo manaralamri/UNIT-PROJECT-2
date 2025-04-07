@@ -176,7 +176,7 @@ def favorite_products_view(request: HttpRequest):
 
 
 def cart_view(request: HttpRequest):
-    """عرض محتويات السلة للمستخدم."""
+    """Display the contents of the cart to the user."""
     if not request.user.is_authenticated :
         messages.error(request, "You must be logged in to view your cart.", "alert-danger")
         return redirect("accounts:sign_in")
@@ -188,7 +188,7 @@ def cart_view(request: HttpRequest):
     return render(request, "cart/cart_view.html", {"cart": cart})
 
 def add_to_cart_view(request: HttpRequest, product_id: int):
-    """إضافة منتج إلى السلة، وزيادة الكمية إذا كان موجودًا بالفعل."""
+    """Add a product to the cart, and increase the quantity if it already exists."""
     if not request.user.is_authenticated:
         messages.error(request, "You must be logged in to add items to your cart.", "alert-danger")
         return redirect("accounts:sign_in")
@@ -198,7 +198,7 @@ def add_to_cart_view(request: HttpRequest, product_id: int):
           return redirect('main:home_view')
 
     try:
-        with transaction.atomic():  # بدء معاملة قاعدة البيانات
+        with transaction.atomic(): 
             product = get_object_or_404(Product, id=product_id)
             if product.quantity == 0:
                 messages.warning(request, "Sorry, this product is currently out of stock.", "alert-warning")
@@ -220,7 +220,7 @@ def add_to_cart_view(request: HttpRequest, product_id: int):
     return redirect("products:cart_view")
 
 def remove_from_cart_view(request: HttpRequest, product_id: int):
-    """إزالة منتج من السلة."""
+    """Remove a product from the cart."""
     if not request.user.is_authenticated:
         messages.error(request, "You must be logged in to manage your cart.", "alert-danger")
         return redirect("accounts:sign_in")
@@ -242,7 +242,7 @@ def remove_from_cart_view(request: HttpRequest, product_id: int):
     return redirect("products:cart_view")
 
 def increase_cart_quantity_view(request: HttpRequest, product_id: int):
-    """زيادة كمية منتج في السلة."""
+    """Increase the quantity of a product in the cart."""
     if not request.user.is_authenticated:
         messages.error(request, "You must be logged in to modify your cart.", "alert-danger")
         return redirect("accounts:sign_in")
@@ -262,7 +262,7 @@ def increase_cart_quantity_view(request: HttpRequest, product_id: int):
     return redirect("products:cart_view")
 
 def decrease_cart_quantity_view(request: HttpRequest, product_id: int):
-    """تقليل كمية منتج في السلة أو حذفه إذا وصلت الكمية إلى 1."""
+    """Reduce the quantity of a product in the cart or delete it if the quantity reaches 1."""
     if not request.user.is_authenticated:
         messages.error(request, "You must be logged in to modify your cart.", "alert-danger")
         return redirect("accounts:sign_in")
@@ -287,93 +287,6 @@ def decrease_cart_quantity_view(request: HttpRequest, product_id: int):
     return redirect("products:cart_view")
 
 
-#def search_products_view(request: HttpRequest):
-#    """عرض نتائج البحث عن منتجات."""
-#    if "search" in request.GET and len(request.GET["search"]) >= 3:
-#        products = Product.objects.filter(name__icontains=request.GET["search"])
-#
-#        if "order_by" in request.GET and request.GET["order_by"] == "category":
-#            products = products.order_by("category")
-#        elif "order_by" in request.GET and request.GET["order_by"] == "price":
-#            products = products.order_by("-price")
-#    else:
-#        products = []
-#
-#    return render(request, "products/search_products.html", {"products": products})
-#
-
-#def search_products_view(request: HttpRequest):
-#    all_products = Product.objects.all()
-#
-#    search_query = request.GET.get('search', '')
-#    category_filter = request.GET.get('category', '')
-#    #brand_filter = request.GET.get('brand', '')  # فلتر البراند
-#    #order_by = request.GET.get('order_by', '')
-#    #brands = []
-#
-#    # تطبيق فلتر البحث إذا تم إدخال نص البحث
-#    if search_query:
-#        all_products = all_products.filter(name__icontains=search_query)
-#
-#    # تطبيق فلتر التصنيف إذا تم اختيار تصنيف
-#    if category_filter:
-#        all_products = all_products.filter(category=category_filter)
-#    #if brand_filter:
-#    #    all_products = all_products.filter(brand__name=brand_filter)  # فلتر البراند بناءً على الاسم
-#
-#
-#    # ترتيب المنتجات إذا تم تحديد ترتيب
-#    #if order_by:
-#    #    if order_by == 'category':
-#    #        all_products = all_products.order_by('category')
-#    #    elif order_by == 'price':
-#    #        all_products = all_products.order_by('-price')
-#
-#    return render(request, 'products/search_products.html', {
-#        'products': all_products,
-#        #'brand_filter': brand_filter,
-#
-#        'search_query': search_query,
-#        'category_filter': category_filter,
-#        #'order_by': order_by
-#    })
-
-#def search_products_view(request: HttpRequest):
-#    all_products = Product.objects.all()
-#    selected_group_price = request.GET.get('group_price', '')
-#
-#    search_query = request.GET.get('search', '')
-#    category_filter = request.GET.get('category', '')
-#
-#        # الحصول على جميع أسعار القروب المتاحة (مرتبة تصاعديًا بدون تكرار)
-#    available_group_prices = (
-#        Product.objects.filter(group_price__isnull=False)
-#        .values_list('group_price', flat=True)
-#        .distinct()
-#        .order_by('group_price')
-#    )
-#
-#
-#    if search_query:
-#        all_products = all_products.filter(name__icontains=search_query)
-#
-#    if category_filter:
-#        all_products = all_products.filter(category=category_filter)
-#
-#    if selected_group_price:
-#        all_products = all_products.filter(group_price=selected_group_price)
-#
-#
-#
-#
-#    return render(request, 'products/search_products.html', {
-#        'products': all_products,
-#        'search_query': search_query,
-#        'category_filter': category_filter,
-#        'selected_group_price': selected_group_price,
-#        'available_group_prices': available_group_prices,
-#
-#    })
 
 def search_products_view(request: HttpRequest):
     all_products = Product.objects.all()
