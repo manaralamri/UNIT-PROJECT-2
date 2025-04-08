@@ -22,7 +22,6 @@ class Product(models.Model):
   max_participants = models.PositiveIntegerField(default=5)  
   description = models.TextField()
   image = models.ImageField(upload_to="images/", default="images/default.jpg")
-  #category = models.CharField(max_length=225)
   category = models.CharField(max_length=250, choices=CategoryChoices.choices)
   brand = models.CharField(max_length=225)
   colour = models.CharField(max_length=225)

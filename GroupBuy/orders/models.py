@@ -57,3 +57,12 @@ class Order(models.Model):
 
         super().save(*args, **kwargs)
 
+
+
+#lass PaymentTest(models.Model):
+#   name = models.CharField(max_length=250)
+#   email = models.EmailField()
+#   address = models.CharField(max_length=250, blank=True)
+#   postal_code = models.CharField(max_length=10, blank=True)
+#   phone_number = models.CharField(max_length=20, blank=True)
+#   city = models.CharField(max_length=250, blank=True)

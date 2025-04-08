@@ -88,6 +88,7 @@ def create_group_purchase(request, product_id):
         with transaction.atomic():
             if product.quantity > 0:
                 group_purchase = GroupPurchase.objects.create(product=product)
+
                 messages.success(request, "Group buying room created successfully!", "alert-success")
 
                 group_purchase_link = request.build_absolute_uri(
@@ -114,19 +115,22 @@ def join_group_purchase(request, group_purchase_id):
         messages.error(request, "Sorry, this product is currently unavailable or the maximum number of participants has been reached!", "alert-danger")
         return redirect('orders:group_purchase_detail', group_purchase_id=group_purchase.id)
     
-    if request.user in group_purchase.participants.all():
-        messages.warning(request, "You are already a participant in this group purchase!", "alert-warning")
+    if request.user.is_authenticated:
+        if request.user in group_purchase.participants.all():
+            messages.warning(request, "You are already a participant in this group purchase!", "alert-warning")
+        else:
+            with transaction.atomic():
+                group_purchase.add_participant(request.user)
+                product.quantity -= 1
+                product.save()
+                messages.success(request, "Group purchase successfully joined!", "alert-success")
+            
+            if group_purchase.participants.count() >= product.max_participants or product.quantity <= 0:
+                group_purchase.is_active = False
+                group_purchase.save()
     else:
-        with transaction.atomic():
-            group_purchase.add_participant(request.user)
-            product.quantity -= 1
-            product.save()
-            messages.success(request, "Group purchase successfully joined!", "alert-success")
-        
-        if group_purchase.participants.count() >= product.max_participants or product.quantity <= 0:
-            group_purchase.is_active = False
-            group_purchase.save()
-    
+        messages.error(request, "You must be logged in to participate in group buying ", "alert-danger")
+
     return redirect('orders:group_purchase_detail', group_purchase_id=group_purchase.id)
 
 
@@ -149,6 +153,8 @@ def group_purchase_detail(request, group_purchase_id):
         group_purchase.save()
 
     return render(request, 'orders/group_purchase_detail.html', {'group_purchase': group_purchase})
+
+
 
 def order_detail(request, order_id):
     order = get_object_or_404(Order, id=order_id)
