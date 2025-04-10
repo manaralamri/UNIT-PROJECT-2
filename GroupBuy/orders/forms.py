@@ -1,5 +1,5 @@
 from django import forms
-from .models import Order
+from .models import Order, PaymentTest
 
 class OrderForm(forms.ModelForm):
 
@@ -12,3 +12,7 @@ class OrderForm(forms.ModelForm):
         self.fields['order_type'].widget = forms.HiddenInput()
         self.fields['order_type'].initial = Order.OrderType.INDIVIDUAL  # تعيينه تلقائيًا كـ فردي
 
+class TestPaymentForm(forms.ModelForm):
+   class Meta:
+      model = PaymentTest
+      fields = ['name', 'email', 'phone_number', 'city', 'address', 'postal_code']

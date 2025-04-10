@@ -64,10 +64,6 @@
 <div class="container my-5">
     <div class="card shadow-lg">
         <div class="card-body">
-            <!-- Countdown Timer -->
-            <div class="text-center mt-4">
-                <div class="badge bg-primary p-4 rounded-circle" style="font-size: 1.5rem;" id="countdown"></div>
-            </div>
 
             <h1 class="text-center text-primary mb-4">Group purchase: {{ group_purchase.product.name }}</h1>
 
@@ -123,42 +119,5 @@
     </div>
 </div>
 
-<!--<script>
-    let expirationTime = new Date("{{ group_purchase.expiration_time|date:'c' }}").getTime();
-    const countdownElement = document.getElementById('countdown');
-    const participantsCountElement = document.getElementById("participants-count");
-    const maxParticipants = parseInt("{{ group_purchase.product.max_participants }}");
-    
-    function updateCountdown() {
-        const now = new Date().getTime();
-        const timeLeft = expirationTime - now;
-
-        if (parseInt(participantsCountElement.textContent) >= maxParticipants) {
-            countdownElement.innerHTML = "Expired";
-            clearInterval(timerInterval);
-            return;
-        }
-
-        if (timeLeft <= 0) {
-            countdownElement.innerHTML = "Expired";
-        } else {
-            const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
-            countdownElement.innerHTML = `${minutes}m ${seconds}s`;
-        }
-    }
-
-    let timerInterval = setInterval(updateCountdown, 1000);
-
-    function resetTimer(newExpirationTime) {
-        expirationTime = newExpirationTime;
-        clearInterval(timerInterval);
-        timerInterval = setInterval(updateCountdown, 1000);
-    }
-    console.log("Expiration from Django:", "{{ group_purchase.expiration_time|date:'c' }}");
-    console.log("Parsed in JS:", new Date("{{ group_purchase.expiration_time|date:'c' }}"));
-
-
-</script>-->
     
 {% endblock %}

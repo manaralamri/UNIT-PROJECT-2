@@ -1,0 +1,46 @@
+<!-- templates/orders/test_payment.html -->
+{% extends 'main/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+  <div class="card shadow p-4">
+    <h2 class="mb-4 text-center">payment for products {{product.name}}</h2>
+    
+    <form method="post">
+      {% csrf_token %}
+
+      <div class="mb-3">
+        <label for="name" class="form-label">Name</label>
+        <input type="text" class="form-control" id="name" name="name" required>
+      </div>
+
+      <div class="mb-3">
+        <label for="email" class="form-label">Email</label>
+        <input type="email" class="form-control" id="email" name="email" required>
+      </div>
+
+      <div class="mb-3">
+        <label for="phone_number" class="form-label">Phone number</label>
+        <input type="text" class="form-control" id="phone_number" name="phone_number" required>
+      </div>
+
+      <div class="mb-3">
+        <label for="city" class="form-label">City</label>
+        <input type="text" class="form-control" id="city" name="city" required>
+      </div>
+
+      <div class="mb-3">
+        <label for="address" class="form-label">Address</label>
+        <textarea class="form-control" id="address" name="address" rows="3" required></textarea>
+      </div>
+
+      <div class="mb-3">
+        <label for="postal_code" class="form-label">Postal code</label>
+        <input type="text" class="form-control" id="postal_code" name="postal_code" required>
+      </div>
+
+      <button type="submit" class="btn btn-primary w-100">Submit</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

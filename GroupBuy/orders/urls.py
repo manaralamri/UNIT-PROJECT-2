@@ -9,6 +9,7 @@ urlpatterns = [
      path('group-purchase/<int:group_purchase_id>/', views.group_purchase_detail, name='group_purchase_detail'),
      path('join-group-purchase/<int:group_purchase_id>/', views.join_group_purchase, name='join_group_purchase'),
      path('order-detail/<int:order_id>/', views.order_detail, name='order_detail'),
+     path('test/payment/<int:order_id>/', views.test_payment_view, name='test_payment_view')
 ]
 #app_name='orders'
 #urlpatterns = [

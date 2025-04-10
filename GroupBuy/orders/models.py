@@ -1,6 +1,4 @@
 from django.db import models
-from django.utils import timezone
-from datetime import timedelta
 from products.models import Product
 from django.contrib.auth.models import User
 from decimal import Decimal
@@ -8,8 +6,7 @@ class GroupPurchase(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     participants = models.ManyToManyField(User, related_name='group_purchases', blank=True)
     is_active = models.BooleanField(default=True)  
-    total_price = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal('0.00'))  
-    expiration_time = models.DateTimeField(blank=True, null=True, default=(timezone.now() + timedelta(seconds=15)))
+    total_price = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal('0.00'))
 
     def calculate_total_price(self):
         price_per_product = self.product.group_price if self.product.group_price else self.product.price
@@ -25,8 +22,6 @@ class GroupPurchase(models.Model):
         if self.participants.count() >= self.product.min_participants:
             self.is_active = False
             super().save()
-    def is_expired(self):
-        return timezone.now() > self.expiration_time if self.expiration_time else False
 
     def __str__(self):
         return f"Group purchase for {self.product.name}, {self.participants.count()} participants"
@@ -59,10 +54,17 @@ class Order(models.Model):
 
 
 
-#lass PaymentTest(models.Model):
-#   name = models.CharField(max_length=250)
-#   email = models.EmailField()
-#   address = models.CharField(max_length=250, blank=True)
-#   postal_code = models.CharField(max_length=10, blank=True)
-#   phone_number = models.CharField(max_length=20, blank=True)
-#   city = models.CharField(max_length=250, blank=True)
+class PaymentTest(models.Model):
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    name = models.CharField(max_length=250)
+    order = models.ForeignKey('Order', on_delete=models.CASCADE)
+    group_purchase = models.ForeignKey('GroupPurchase', on_delete=models.SET_NULL, null=True, blank=True)  # ربط بـ شراء جماعي
+    email = models.EmailField()
+    address = models.CharField(max_length=250, blank=True)
+    postal_code = models.CharField(max_length=10, blank=True)
+    phone_number = models.CharField(max_length=20, blank=True)
+    city = models.CharField(max_length=250, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Payment by {self.name} - {self.email}"
