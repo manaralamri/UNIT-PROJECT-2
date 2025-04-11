@@ -7,6 +7,7 @@ from .models import Profile_Seller, Profile_User
 from django.db import transaction
 from products.models import Product
 from orders.models import Order, GroupPurchase
+from django.core.exceptions import ObjectDoesNotExist
 
 def user_sign_up(request: HttpRequest):
     
@@ -173,23 +174,58 @@ def update_seller_profile(request):
 
 
 def seller_dashboard_view(request):
-    if not hasattr(request.user, 'profile_seller'):
-        messages.error(request, 'Sorry, this page is for sellers only.', 'alter-danger')
-        return redirect('main:home_view')  
+    try:
+        if not hasattr(request.user, 'profile_seller'):
+            messages.error(request, 'Sorry, this page is for sellers only.', 'alert-danger')
+            return redirect('main:home_view')  
 
-    products = Product.objects.filter(seller=request.user)
+        products = Product.objects.filter(seller=request.user)
 
-    product_data = []
-    for product in products:
-        individual_orders = Order.objects.filter(product=product)
-        group_orders = GroupPurchase.objects.filter(product=product)
-        product_data.append({
-            'product': product,
-            'individual_orders': individual_orders,
-            'group_orders': group_orders,
-        })
+        product_data = []
+        for product in products:
+            try:
+                individual_orders = Order.objects.filter(product=product)
+                group_orders = GroupPurchase.objects.filter(product=product)
+            except Exception as e:
+                messages.warning(request, f'Error loading orders for product {product.name}: {str(e)}', 'alert-warning')
+                individual_orders = []
+                group_orders = []
 
-    return render(request, 'accounts/seller_dashboard.html', {'product_data': product_data})
+            product_data.append({
+                'product': product,
+                'individual_orders': individual_orders,
+                'group_orders': group_orders,
+            })
+
+        return render(request, 'accounts/seller_dashboard.html', {'product_data': product_data})
+    
+    except ObjectDoesNotExist:
+        messages.error(request, 'Some related objects were not found.', 'alert-danger')
+        return redirect('main:home_view')
+
+    except Exception as e:
+        messages.error(request, f'An unexpected error occurred: {str(e)}', 'alert-danger')
+        return redirect('main:home_view')
+
+#def seller_dashboard_view(request):
+#    try:
+#        if not hasattr(request.user, 'profile_seller'):
+#            messages.error(request, 'Sorry, this page is for sellers only.', 'alter-danger')
+#            return redirect('main:home_view')  
+#    
+#        products = Product.objects.filter(seller=request.user)
+#    
+#        product_data = []
+#        for product in products:
+#            individual_orders = Order.objects.filter(product=product)
+#            group_orders = GroupPurchase.objects.filter(product=product)
+#            product_data.append({
+#                'product': product,
+#                'individual_orders': individual_orders,
+#                'group_orders': group_orders,
+#            })
+#    
+#    return render(request, 'accounts/seller_dashboard.html', {'product_data': product_data})
 
 
 
