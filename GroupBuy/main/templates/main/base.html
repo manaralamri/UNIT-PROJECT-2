@@ -82,12 +82,20 @@
           <li class="nav-item">
             <a class="nav-link mx-2 text-white" href="#">Products</a>
           </li>
-          <li class="nav-item">
+          <li class="nav-item"> 
             {% if request.user.is_authenticated and request.user.profile_seller %}
             <a class="nav-link mx-2 text-white" href="{% url 'products:create_product_view'%}">Add Product</a>
             {%endif%}
           </li>
+          <li class="nav-item">
+
+            {% if request.user.is_authenticated and request.user.profile_seller %}
+            <a class="nav-link mx-2 text-white" href="{% url 'accounts:seller_dashboard_view'%}">Dashboard</a>
+             {%endif%}
+          </li>
+
           <li class="nav-item dropdown">
+            {% if request.user.is_authenticated and request.user.profile_user %}
             <a class="nav-link mx-2 dropdown-toggle text-white" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
               Company
             </a>
@@ -96,11 +104,11 @@
 
               <li><a class="dropdown-item" href="{% url 'orders:group_purchase_all' %}">All GroupBuy</a></li>
               <li><a class="dropdown-item" href="#">Contact us</a></li>
+              {%endif%}
             </ul>
           </li>
         </ul>
         <ul class="navbar-nav ms-auto">
-        <!-- أيقونة المفضلة -->
         <li class="nav-item">
           {% if request.user.is_authenticated and request.user.profile_user %}
           <a class="nav-link  text-white" href="{% url 'products:favorite_products_view' %}">
@@ -109,7 +117,6 @@
           {%endif%}
         </li>
 
-        <!-- أيقونة السلة -->
         <li class="nav-item">
           {% if request.user.is_authenticated and request.user.profile_user %}
           <a class="nav-link  text-white" href="{% url 'products:cart_view' %}">

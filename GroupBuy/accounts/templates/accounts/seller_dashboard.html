@@ -2,13 +2,13 @@
 
 {% block content %}
 
-<h2 class="text-center my-4">Seller Control Panel - {{ user.username }}</h2>
+<!--<h2 class="text-center my-4">Seller Control Panel - {{ user.username }}</h2>
 
 <div class="container">
   <div class="row">
+
     {% for item in product_data %}
       
-      <!-- الطلبات الفردية -->
       {% for order in item.individual_orders %}
         <div class="col-md-6 mb-4">
           <div class="card shadow-sm h-100">
@@ -19,24 +19,11 @@
               <div class="col-md-8">
                 <div class="card-body">
                   <h5 class="card-title">{{ item.product.name }}</h5>
-                  <p class="card-text text-primary"><strong>Request type:</strong> Individual</p>
-                  <p class="card-text"><strong>Price:</strong> {{ item.product.price }} ريال</p>
-                  <p class="card-text"><strong>Buyers:</strong> {{ item.individual_orders.count }}</p>
+                  <p class="card-text text-primary"><strong>Order Type:</strong> Individual</p>
+                  <p class="card-text"><strong>Price:</strong> {{ item.product.price }} SAR</p>
+                  <p class="card-text"><strong>Number of Buyers:</strong> {{ item.individual_orders.count }}</p>
 
-                  <p class="card-text">
-                    <a href="{% url 'product_detail' item.product.id %}" class="btn btn-outline-primary btn-sm">View Product Details</a>
-                  </p>
-
-                  <hr>
-                  <p><strong>Ratings:</strong> {{ item.product.average_rating|default:"No ratings yet" }}</p>
-                  <p><strong>Comments:</strong></p>
-                  <ul>
-                    {% for review in item.product.reviews.all %}
-                      <li>{{ review.user.username }}: {{ review.comment }}</li>
-                    {% empty %}
-                      <li>No comments yet.</li>
-                    {% endfor %}
-                  </ul>
+                  <a href="{% url 'products:product_detail_view' item.product.id %}" class="btn btn-outline-success btn-sm">View Product Details</a>
                 </div>
               </div>
             </div>
@@ -44,7 +31,6 @@
         </div>
       {% endfor %}
 
-      <!-- الطلبات الجماعية -->
       {% for group_order in item.group_orders %}
         <div class="col-md-6 mb-4">
           <div class="card shadow-sm h-100">
@@ -55,24 +41,11 @@
               <div class="col-md-8">
                 <div class="card-body">
                   <h5 class="card-title">{{ item.product.name }}</h5>
-                  <p class="card-text text-success"><strong>Request type:</strong> Group</p>
-                  <p class="card-text"><strong>Group Price:</strong> {{ item.product.group_price }} ريال</p>
-                  <p class="card-text"><strong>Group Participants:</strong> {{ group_order.participants.count }}</p>
+                  <p class="card-text text-success"><strong>Order Type:</strong> Group</p>
+                  <p class="card-text"><strong>Group Price:</strong> {{ item.product.group_price }} SAR</p>
+                  <p class="card-text"><strong>Participants:</strong> {{ group_order.participants.count }}</p>
 
-                  <p class="card-text">
-                    <a href="{% url 'products:product_detail_view' product.id %}" class="btn btn-outline-success btn-sm">
-                    </p>
-
-                  <hr>
-                  <p><strong>Ratings:</strong> {{ item.product.average_rating|default:"No ratings yet" }}</p>
-                  <p><strong>Comments:</strong></p>
-                  <ul>
-                    {% for review in item.product.reviews.all %}
-                      <li>{{ review.user.username }}: {{ review.comment }}</li>
-                    {% empty %}
-                      <li>No comments yet.</li>
-                    {% endfor %}
-                  </ul>
+                  <a href="{% url 'products:product_detail_view' item.product.id %}" class="btn btn-outline-success btn-sm">View Product Details</a>
                 </div>
               </div>
             </div>
@@ -82,10 +55,66 @@
 
     {% empty %}
       <div class="col-12">
-        <div class="alert alert-info text-center">لا توجد منتجات أو طلبات بعد.</div>
+        <div class="alert alert-info text-center">No products or orders yet.</div>
+      </div>
+    {% endfor %}
+
+  </div>
+</div>-->
+
+
+<h2 class="text-center my-4">Seller Control Panel - {{ user.username }}</h2>
+
+<div class="container">
+  <div class="row">
+    {% for item in product_data %}
+      <div class="col-md-6 mb-4">
+        <div class="card shadow-sm h-100">
+          <div class="row g-0">
+            <div class="col-md-4">
+              <img src="{{ item.product.image.url }}" class="img-fluid rounded-start" alt="{{ item.product.name }}">
+            </div>
+            <div class="col-md-8">
+              <div class="card-body">
+                <h5 class="card-title">{{ item.product.name }}</h5>
+
+                {% if item.individual_orders %}
+                  <p class="card-text text-primary">
+                    <strong>Order Type:</strong> Individual
+                  </p>
+                  <p class="card-text">
+                    <strong>Price:</strong> {{ item.product.price }} SAR
+                  </p>
+                  <p class="card-text">
+                    <strong>Number of Buyers:</strong> {{ item.individual_orders.count }}
+                  </p>
+                {% endif %}
+
+                {% if item.group_orders %}
+                  <p class="card-text text-success">
+                    <strong>Order Type:</strong> Group
+                  </p>
+                  <p class="card-text">
+                    <strong>Group Price:</strong> {{ item.product.group_price }} SAR
+                  </p>
+                  <p class="card-text">
+                    <strong>Max Participants:</strong> {{ item.product.max_participants }}
+                  </p>
+                {% endif %}
+
+                <a href="{% url 'products:product_detail_view' item.product.id %}" class="btn btn-outline-success btn-sm mt-3">
+                  View Product Details
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% empty %}
+      <div class="col-12">
+        <div class="alert alert-info text-center">No products or orders available yet.</div>
       </div>
     {% endfor %}
   </div>
 </div>
-
 {% endblock %}

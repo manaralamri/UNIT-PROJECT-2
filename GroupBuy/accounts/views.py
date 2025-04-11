@@ -174,7 +174,7 @@ def update_seller_profile(request):
 
 def seller_dashboard_view(request):
     if not hasattr(request.user, 'profile_seller'):
-        messages.error(request, 'عذرًا، هذه الصفحة مخصصة للبائعين فقط.')
+        messages.error(request, 'Sorry, this page is for sellers only.', 'alter-danger')
         return redirect('main:home_view')  
 
     products = Product.objects.filter(seller=request.user)
