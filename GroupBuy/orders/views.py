@@ -122,11 +122,15 @@ def create_group_purchase(request, product_id):
     
 
     if request.method == 'POST':
+        is_private = request.POST.get('is_private') == 'on'
         try:
             with transaction.atomic():
                 # Final check before creating group room
                 if product.quantity > 0:
-                    group_purchase = GroupPurchase.objects.create(product=product)
+                    group_purchase = GroupPurchase.objects.create(
+                        product=product,
+                        is_private=is_private
+                        )
     
                     messages.success(request, "Group purchase room created successfully!", "alert-success")
     
@@ -229,6 +233,27 @@ def group_purchase_detail(request, group_purchase_id):
     return render(request, 'orders/group_purchase_detail.html', {'group_purchase': group_purchase})
 
 
+def group_purchase_all(request):
+    """View group room list"""
+    #group_purchases = GroupPurchase.objects.select_related('product').all().order_by('-id')
+    group_purchases = GroupPurchase.objects.select_related('product').filter(is_private=False).order_by('-id')
+    return render(request, 'orders/group_purchase_all.html', {'group_purchases': group_purchases})
+
+
+
+def existing_group_choices(request, product_id):
+    try:
+        product = Product.objects.get(id=product_id)
+    except Product.DoesNotExist:
+        messages.error(request, "Product not found.", "alert-danger")
+        return redirect('products:all_product_view')
+
+    open_group = GroupPurchase.objects.filter(product=product, is_active=True).first()
+
+    return render(request, 'orders/existing_group_choices.html', {
+        'product': product,
+        'open_group': open_group, 
+    })
 
 def order_detail(request, order_id):
     #order = get_object_or_404(Order, id=order_id)
@@ -237,21 +262,20 @@ def order_detail(request, order_id):
  
 
 def test_payment_view(request, order_id):
-    """
-    Simulates a payment process for a given order.
-    Only accessible to the user who placed the order.
-    """
-
-    #order = get_object_or_404(Order, id=order_id)
     try:
         order = Order.objects.get(id=order_id)
     except Order.DoesNotExist:
         messages.error(request, "The order does not exist.", "alert-danger")
         return redirect('main:home_view')
     
-
     group_purchase = order.group_purchase  
+    product = order.product
+    quantity = order.quantity
+
     if group_purchase:
+        total_price = product.group_price if product.group_price else product.price
+        total_price *= quantity
+
         if request.method == 'POST':
             form = TestPaymentForm(request.POST)
             if form.is_valid():
@@ -266,9 +290,17 @@ def test_payment_view(request, order_id):
         else:
             form = TestPaymentForm()
 
-        return render(request, 'orders/test_payment.html', {'form': form, 'order': order, 'group_purchase': group_purchase})
+        return render(request, 'orders/test_payment.html', {
+            'form': form,
+            'order': order,
+            'product': product,
+            'group_purchase': group_purchase,
+            'total_price': total_price,  
+        })
     
     else:
+        total_price = product.price * quantity
+
         if request.method == 'POST':
             form = TestPaymentForm(request.POST)
             if form.is_valid():
@@ -282,7 +314,74 @@ def test_payment_view(request, order_id):
         else:
             form = TestPaymentForm()
 
-        return render(request, 'orders/test_payment.html', {'form': form, 'order': order})
+        return render(request, 'orders/test_payment.html', {
+            'form': form,
+            'order': order,
+            'product': product,
+            'total_price': total_price  
+        })
+
+
+
+#def test_payment_view(request, order_id):
+#    """
+#    Simulates a payment process for a given order.
+#    Only accessible to the user who placed the order.
+#    """
+#
+#    #order = get_object_or_404(Order, id=order_id)
+#    try:
+#        order = Order.objects.get(id=order_id)
+#    except Order.DoesNotExist:
+#        messages.error(request, "The order does not exist.", "alert-danger")
+#        return redirect('main:home_view')
+#    
+#    group_purchase = order.group_purchase  
+#    product = order.product
+#    quantity = order.quantity
+#    total_price = product.price * quantity
+#    if group_purchase:
+#        if request.method == 'POST':
+#            form = TestPaymentForm(request.POST)
+#            if form.is_valid():
+#                test_payment = form.save(commit=False)
+#                test_payment.user = request.user if request.user.is_authenticated else None
+#                test_payment.order = order
+#                test_payment.group_purchase = group_purchase  
+#                test_payment.save()
+#                messages.success(request, "Thank you! This was a test payment experience. ✅", "alert-success")
+#                return redirect('orders:group_purchase_detail', group_purchase_id=group_purchase.id)
+#
+#        else:
+#            form = TestPaymentForm()
+#
+#        return render(request, 'orders/test_payment.html', 
+#                      {'form': form, 
+#                       'order': order, 
+#                       'product':product, 
+#                       'group_purchase': group_purchase  
+#                       })
+#    
+#    else:
+#        if request.method == 'POST':
+#            form = TestPaymentForm(request.POST)
+#            if form.is_valid():
+#                test_payment = form.save(commit=False)
+#                test_payment.user = request.user if request.user.is_authenticated else None
+#                test_payment.order = order
+#                test_payment.save()
+#                messages.success(request, "Thank you! This was a test payment experience. ✅", "alert-success")
+#                return redirect('orders:order_detail', order_id=order.id)
+#
+#        else:
+#            form = TestPaymentForm()
+#
+#        return render(request, 'orders/test_payment.html',
+#                       {'form': form,
+#                         'order': order, 
+#                         'product':product,
+#                         'total_price':total_price
+#                        })
 
 
 

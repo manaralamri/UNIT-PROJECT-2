@@ -5,6 +5,9 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from .models import Profile_Seller, Profile_User
 from django.db import transaction
+from products.models import Product
+from orders.models import Order, GroupPurchase
+
 def user_sign_up(request: HttpRequest):
     
     if request.method == 'POST':
@@ -93,37 +96,6 @@ def log_out(request: HttpRequest):
     messages.success(request, "logged out successfully", "alert-warning")
     return redirect(request.GET.get("next", "/"))
 
-#def user_profile_view(request:HttpRequest, user_name):
-#    try:
-#        user = User.objects.get(username=user_name)
-#        if not Profile_User.objects.filter(user=user).first():
-#            new_profile = Profile_User(user=user)
-#            new_profile.save()
-#
-#    
-#    except Exception as e:
-#        print(e)
-#        return render(request, '404.html')
-#    return render(request, 'accounts/user_profile.html', {'user':user})
-#
-#def seller_profile_view(request:HttpRequest, user_name):
-#    try:
-#        user = User.objects.get(username=user_name)
-#        # whay one get profile user from Model name 
-#        #profile:Profile = user.profile
-#        if not Profile_Seller.objects.filter(user=user).first():
-#            new_profile = Profile_Seller(user=user)
-#            new_profile.save()
-#
-#
-#        # whay to get user from anther whay from objects.get
-#        # profile = Profile.objects.get(user=user)
-#
-#    
-#    except Exception as e:
-#        print(e)
-#        return render(request, '404.html')
-#    return render(request, 'accounts/seller_profile.html', {'user':user})
 
 def profile_view(request: HttpRequest, user_name):
     try:
@@ -199,6 +171,25 @@ def update_seller_profile(request):
 
     return render(request, 'accounts/update_seller_profile.html')
 
+
+def seller_dashboard_view(request):
+    if not hasattr(request.user, 'profile_seller'):
+        messages.error(request, 'عذرًا، هذه الصفحة مخصصة للبائعين فقط.')
+        return redirect('main:home_view')  
+
+    products = Product.objects.filter(seller=request.user)
+
+    product_data = []
+    for product in products:
+        individual_orders = Order.objects.filter(product=product)
+        group_orders = GroupPurchase.objects.filter(product=product)
+        product_data.append({
+            'product': product,
+            'individual_orders': individual_orders,
+            'group_orders': group_orders,
+        })
+
+    return render(request, 'accounts/seller_dashboard.html', {'product_data': product_data})
 
 
 

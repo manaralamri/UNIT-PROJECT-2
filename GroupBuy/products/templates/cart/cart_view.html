@@ -1,7 +1,7 @@
 {% extends 'main/base.html' %}
 
 {% block content %}
-<div class="container mt-4">
+<!--<div class="container mt-4">
   <h2 class="mb-3">Your Cart</h2>
   {% if cart.items.all %}
     <table class="table table-bordered">
@@ -59,5 +59,80 @@
   {% else %}
     <p class="text-muted">Your cart is empty.</p>
   {% endif %}
+</div>-->
+
+
+<div class="container mt-4">
+  <h2 class="mb-3 text-center">Your Cart</h2>
+
+  {% if cart.items.all %}
+    <div class="table-responsive">
+      <table class="table table-bordered align-middle text-center">
+        <thead class="table-light">
+          <tr>
+            <th>Image</th>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Total</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in cart.items.all %}
+            <tr>
+              <td>
+                <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" 
+                     class="img-thumbnail" 
+                     style="width: 80px; height: 80px; object-fit: cover;">
+              </td>
+              <td>
+                <a href="{% url 'products:product_detail_view' item.product.id %}" 
+                   class="text-primary fw-bold">
+                  {{ item.product.name }}
+                </a>
+              </td>
+              <td>
+                <div class="d-flex justify-content-center align-items-center">
+                  <a href="{% url 'products:decrease_cart_quantity_view' item.product.id %}" 
+                     class="btn btn-sm btn-outline-danger mx-1"
+                     style="min-width: 30px;">-</a>
+                  <span class="px-2">{{ item.quantity }}</span>
+                  <a href="{% url 'products:increase_cart_quantity_view' item.product.id %}" 
+                     class="btn btn-sm btn-outline-success mx-1"
+                     style="min-width: 30px;">+</a>
+                </div>
+              </td>
+              <td>{{ item.product.price }} SAR</td>
+              <td>{{ item.total_price }} SAR</td>
+              <td>
+                <div class="d-flex justify-content-center gap-2 flex-wrap">
+                  <!-- زر الحذف -->
+                  <a href="{% url 'products:remove_from_cart_view' item.product.id %}" 
+                     class="btn btn-outline-danger btn-sm d-flex align-items-center gap-1">
+                    <i class="bi bi-trash"></i> Remove
+                  </a>
+                  
+                  <!-- زر الشراء -->
+                  <a href="{% url 'orders:create_order_view' item.product.id %}" 
+                     class="btn btn-outline-primary btn-sm d-flex align-items-center gap-1">
+                    <i class="bi bi-cart-check"></i> Buy Now
+                  </a>
+                </div>
+                            </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class=" mt-3">
+      <h4 class="fw-bold">Total: {{ cart.total_price }} SAR</h4>
+    </div>
+
+  {% else %}
+    <p class="text-muted text-center">Your cart is empty.</p>
+  {% endif %}
 </div>
+
 {% endblock %}

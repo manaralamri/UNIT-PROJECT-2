@@ -2,7 +2,7 @@
 {% extends 'main/base.html' %}
 
 {% block content %}
-<div class="container mt-5">
+<!--<div class="container mt-5">
   <div class="card shadow p-4">
     <h2 class="mb-4 text-center">payment for products {{product.name}}</h2>
     
@@ -42,5 +42,135 @@
       <button type="submit" class="btn btn-primary w-100">Submit</button>
     </form>
   </div>
+</div>-->
+
+
+<!--<div class="container mt-5">
+  <div class="card shadow p-4">
+    <h2 class="mb-4 text-center">Payment for {{ product.name }}</h2>
+
+    <div class="row">
+      <div class="col-md-6 order-md-2 mb-4">
+        <div class="border p-3 bg-light rounded">
+          <h4 class="mb-3">Order Summary</h4>
+          <ul class="list-unstyled">
+            <li><strong>Product:</strong> {{ product.name }}</li>
+            <li><strong>Price per product:</strong> {{ product.price }} ريال</li>
+            <li><strong>Quantity:</strong> {{ order.quantity }}</li>
+            <li><strong>Total price:</strong> {{ total_price }} ريال</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="col-md-6 order-md-1">
+        <form method="post">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label for="name" class="form-label">Name</label>
+            <input type="text" class="form-control" id="name" name="name" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" class="form-control" id="email" name="email" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="phone_number" class="form-label">Phone number</label>
+            <input type="text" class="form-control" id="phone_number" name="phone_number" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="city" class="form-label">City</label>
+            <input type="text" class="form-control" id="city" name="city" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="address" class="form-label">Address</label>
+            <textarea class="form-control" id="address" name="address" rows="3" required></textarea>
+          </div>
+
+          <div class="mb-3">
+            <label for="postal_code" class="form-label">Postal code</label>
+            <input type="text" class="form-control" id="postal_code" name="postal_code" required>
+          </div>
+
+          <button type="submit" class="btn btn-primary w-100">Submit</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>-->
+
+
+<div class="container mt-5">
+  <h2 class="mb-4 text-center">Checkout</h2>
+  <div class="row">
+    <!-- Order Summary -->
+    <div class="col-md-6 mb-4">
+      <div class="card p-4 shadow-sm">
+        <h4 class="mb-3">Order Summary</h4>
+        <hr>
+        <div class="text-center mb-3">
+          <img src="{{ product.image.url }}" alt="{{ product.name }}" class="img-fluid rounded" style="max-height: 250px;">
+        </div>  
+        <p><strong>Product:</strong> {{ product.name }}</p>
+        <p><strong>Description:</strong> {{ product.description }}</p>
+        <p><strong>Price per product:</strong> {{ product.price }} SAR</p>
+        <p><strong>Price per product for group:</strong> {{ product.group_price }} SAR</p>
+        <p><strong>Quantity:</strong> {{ order.quantity }}</p>
+        <p><strong>Delivery Location:</strong> Saudi Arabia</p>
+        <p><strong>Delivery Method:</strong> Standard Shipping</p>
+        <p><strong>Estimated Time:</strong> 3-5 days</p>
+        <hr>
+        <!--<h5>Total: <strong>{{ product.group_price|default:product.price }} SAR</strong></h5>-->
+        <h5>Total: <strong>{{ total_price }} SAR</strong></h5>
+
+      </div>
+    </div>
+
+    <!-- Payment Form -->
+    <div class="col-md-6 mb-4">
+      <div class="card p-4 shadow-sm">
+        <h4 class="mb-3">Shipping Information</h4>
+        <form method="post">
+          {% csrf_token %}
+
+          <div class="mb-3">
+            <label for="name" class="form-label">Full Name</label>
+            <input type="text" class="form-control" id="name" name="name" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" class="form-control" id="email" name="email" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="phone_number" class="form-label">Phone Number</label>
+            <input type="text" class="form-control" id="phone_number" name="phone_number" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="city" class="form-label">City</label>
+            <input type="text" class="form-control" id="city" name="city" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="address" class="form-label">Address</label>
+            <textarea class="form-control" id="address" name="address" rows="3" required></textarea>
+          </div>
+
+          <div class="mb-3">
+            <label for="postal_code" class="form-label">Postal Code</label>
+            <input type="text" class="form-control" id="postal_code" name="postal_code" required>
+          </div>
+
+          <button type="submit" class="btn btn-primary w-100">Proceed to Payment</button>
+        </form>
+      </div>
+    </div>
+  </div>
 </div>
+
 {% endblock %}

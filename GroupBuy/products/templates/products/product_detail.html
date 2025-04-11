@@ -171,7 +171,7 @@
 
 
 <div class="row">
-<div class="col-md-6">
+<div class="col-md-6 d-flex justify-content-center justify-content-md-start mb-4 mb-md-0">
   <img src="{{ product.image.url }}" class="w-100 product-image" alt="{{ product.name }}" />
 </div>
 
@@ -199,7 +199,7 @@
   </div>
 </div>
 {% if request.user.is_authenticated and request.user.profile_user %}
-<div class="d-flex justify-content-end mt-4 gap-3">
+<!--<div class="d-flex justify-content-end mt-4 gap-3">
   <a href="{% url 'products:add_to_cart_view' product.id %}" class="btn btn-warning">
     <i class="bi bi-cart"></i> Add Cart
   </a>
@@ -207,10 +207,24 @@
   <a href="{% url 'orders:create_order_view' product.id %}" class="btn btn-success">
     <i class="bi bi-cart-plus"></i> Individual  Buy
   </a>
-  <a href="{% url 'orders:create_group_purchase' product.id%}" class="btn btn-success">
+  <a href="{% url 'orders:existing_group_choices' product.id%}" class="btn btn-success">
+    <i class="bi bi-cart-plus"></i> Group Buy
+  </a>
+</div>-->
+<div class="d-flex justify-content-end mt-4 gap-3 flex-wrap">
+  <a href="{% url 'products:add_to_cart_view' product.id %}" class="btn btn-warning btn-sm btn-lg-md">
+    <i class="bi bi-cart"></i> Add Cart
+  </a>
+
+  <a href="{% url 'orders:create_order_view' product.id %}" class="btn btn-success btn-sm btn-lg-md">
+    <i class="bi bi-cart-plus"></i> Individual Buy
+  </a>
+
+  <a href="{% url 'orders:existing_group_choices' product.id %}" class="btn btn-success btn-sm btn-lg-md">
     <i class="bi bi-cart-plus"></i> Group Buy
   </a>
 </div>
+
 {% else %}
   <div class="alert alert-warning mt-4" role="alert">
     <i class="bi bi-exclamation-circle-fill"></i>
@@ -249,7 +263,7 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">Delete Game</h1>
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Delete Product</h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">

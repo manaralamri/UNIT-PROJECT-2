@@ -1,4 +1,3 @@
-/* تغيير لون الخلفية إلى أزرق غامق */
 .navbar {
   background-color:  #003366; /* #0a2540اللون الأزرق الغامق */
 }
@@ -6,32 +5,28 @@
   color: #ffffff;
 }
 
-/* تغيير لون النصوص عند التمرير فوقها */
 .navbar-nav .nav-link:hover {
-  color: #4f9cf9; /* الأزرق الفاتح عند التمرير */
+  color: #4f9cf9; 
 }
 
-/* تغيير لون النصوص في الـ Dropdown */
 .navbar .dropdown-menu {
-  background-color: #003366; /* الأزرق الغامق */
+  background-color: #003366; 
 }
 
 .navbar .dropdown-item {
-  color: #ffffff; /* النصوص باللون الأبيض داخل الـ Dropdown */
+  color: #ffffff;
 }
 
 .navbar .dropdown-item:hover {
-  background-color: #4f9cf9; /* الأزرق الفاتح عند التمرير */
+  background-color: #4f9cf9; 
 }
 
-/* تغيير لون الأيقونات في الشريط العلوي */
 .navbar-nav .nav-item i {
   color: #ffffff;
 }
 
-/* تغيير لون الأيقونات عند التمرير فوقها */
 .navbar-nav .nav-item i:hover {
-  color: #2f445e; /* الأزرق الفاتح عند التمرير */
+  color: #2f445e; 
 }
 .navbar-toggler {
   background-color: white !important;
@@ -48,7 +43,7 @@
 
 
 .btn-dark-blue {
-  background-color: #1c3d5a; /* أزرق غامق */
+  background-color: #1c3d5a; 
   color: white;
 }
 
@@ -292,6 +287,12 @@
   border-radius: 8px;  
 }
 
+@media (max-width: 768px) {
+  .product-image {
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
 
 .form-box {
   border: 1px solid #000000;
@@ -320,7 +321,7 @@
   width: 150px;
   height: 150px;
   object-fit: cover;
-  border: 3px solid #0d6efd; /* لون الإطار الأساسي في Bootstrap */
+  border: 3px solid #0d6efd; 
   border-radius: 50%;
 
 }  
@@ -406,25 +407,25 @@
   transform: scale(1.05);
 }
 .text {
-  font-size: 24px; /* تكبير النص */
-  font-weight: bold; /* جعله عريضًا */
-  color: #1d0449; /* تغيير اللون */
-  text-transform: uppercase; /* جعل النص بأحرف كبيرة (اختياري) */
+  font-size: 24px; 
+  font-weight: bold; 
+  color: #1d0449; 
+  text-transform: uppercase; 
 }
 
 .btn-light {
-  background-color: #04264b !important; /* تغيير لون الخلفية */
-  color: white !important; /* تغيير لون النص */
-  font-size: 18px; /* تكبير النص */
-  font-weight: bold; /* جعله عريضًا */
-  padding: 12px 24px; /* تعديل التباعد */
-  border-radius: 8px; /* جعل الحواف مستديرة */
+  background-color: #04264b !important;
+  color: white !important; 
+  font-size: 18px; 
+  font-weight: bold; 
+  padding: 12px 24px;
+  border-radius: 8px; 
   transition: all 0.3s ease-in-out;
 }
 
 .btn-light:hover {
-  background-color: #093f78 !important; /* لون مختلف عند التحويم */
-  transform: scale(1.05); /* تكبير الزر عند تمرير الماوس */
+  background-color: #093f78 !important; 
+  transform: scale(1.05); 
 }
 
 /*  style create order group*/
@@ -474,11 +475,20 @@ input:focus, select:focus, textarea:focus {
 .btn-primary {
   background-color: #003366;
   border-radius: 8px;
-  font-size: 1.1rem;
+  font-size: 0.9rem;
   font-weight: bold;
   transition: 0.3s;
 }
+.btn-primary-btn{
+  background-color: #003366;
+  color: #fffefe;
 
+}
+.btn-primary-btn:hover{
+  background-color: #003366;
+  color: #fffefe;
+
+}
 .btn-primary:hover {
   background-color: #003366;
 }

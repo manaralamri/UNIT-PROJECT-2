@@ -6,6 +6,7 @@ class GroupPurchase(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     participants = models.ManyToManyField(User, related_name='group_purchases', blank=True)
     is_active = models.BooleanField(default=True)  
+    is_private = models.BooleanField(default=False)
     total_price = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal('0.00'))
 
     def calculate_total_price(self):

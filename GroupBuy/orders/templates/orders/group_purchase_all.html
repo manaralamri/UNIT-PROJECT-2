@@ -1,0 +1,39 @@
+{% extends "main/base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4 text-center">All group buying rooms</h2>
+    <hr>
+
+    <div class="row">
+        {% for group in group_purchases %}
+        <div class="col-md-4 mb-4">
+            <div class="card {% if group.is_active %}border-success{% else %}border-secondary{% endif %}">
+                <div class="card-body">
+                    <h5 class="card-title">{{ group.product.name }}</h5>
+                    <p class="card-text">price group: {{ group.product.group_price|default:group.product.price }}</p>
+                    <p class="card-text"> Max Participants: {{ group.product.max_participants }}</p>
+                    <p class="card-text"> Min Participants: {{ group.product.min_participants }}</p>
+
+                    <p class="card-text">participants: {{ group.participants.count }} person</p>
+                    <p class="card-text {% if group.is_active %}text-success{% else %}text-danger{% endif %}">
+                      condition: {% if group.is_active %}Open✅{% else %}Closed❌{% endif %}
+                    </p>
+                    {% if group.is_active %}
+                    <!-- If the group is open, show the details button -->
+                    <a href="{% url 'orders:group_purchase_detail' group.id %}" class="btn btn-success">
+                        details
+                    </a>
+                    {% else %}
+                    <!-- If the group is closed, show a message instead -->
+                    <p class="text-danger">This group is closed.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p>There are no group buying rooms currently.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
