@@ -23,10 +23,10 @@ User Stories describe the functionalities needed by users and detail how they in
 For detailed user stories, see the [User Stories](https://github.com/manaralamri/UNIT-PROJECT-2/blob/f77cd47fc391997dfbfc9bfe89bfe2b94daddcaf/UserStories.md).
 
 ## UML (link or file):
-[Link to UML diagram or file if applicable]
+[https://github.com/manaralamri/UNIT-PROJECT-2/blob/e839346248263373d6718398fa65990f0441105e/uml.pdf]
 
 ## Wireframe (link or file):
-[Link to wireframe diagram or file if applicable]
+[https://www.figma.com/design/MKwiZeRNIsLMLkolmpwmnK/Untitled?node-id=501-2&m=dev&t=NZy2zxl01nuqlKry-1]
 
 
 
