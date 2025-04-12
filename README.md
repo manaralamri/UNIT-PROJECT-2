@@ -26,7 +26,7 @@ For detailed user stories, see the [User Stories](https://github.com/manaralamri
 [Link to UML diagram or file if applicable]
 
 ## Wireframe (link or file):
-[Link to wireframe diagram or file if applicable]
+[https://www.figma.com/design/MKwiZeRNIsLMLkolmpwmnK/Untitled?node-id=501-2&m=dev&t=NZy2zxl01nuqlKry-1]
 
 
 
