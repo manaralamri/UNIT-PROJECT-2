@@ -1,32 +1,6 @@
 {% extends "main/base.html" %}
 
 {% block content %}
-<!--<div class="container mt-5">
-    <h2 class="mb-4">Welcome to Group Purchase</h2>
-
-    <p class="lead mb-4" style="color: rgb(6, 6, 84);">Here you can join an open group purchase room for this product, or you can create a new room if you prefer.</p>
-
-    {% if open_group %}
-        <div class="card border-success mb-3">
-            <div class="card-body">
-                <h5 class="card-title text-success">Open Group Purchase Room</h5>
-                <p class="card-text">Participants: <strong>{{ open_group.participants.count }}</strong> person(s)</p>
-                <p class="card-text">Price: <strong>{{ open_group.product.group_price|default:open_group.product.price }} SAR</strong></p>
-                <p class="card-text">Status: <span class="badge bg-success">Open</span></p>
-                <a href="{% url 'orders:group_purchase_detail' open_group.id %}" class="btn btn-success">Join the Room</a>
-            </div>
-        </div>
-    {% else %}
-        <p class="text-danger">There are no open group rooms for this product at the moment.</p>
-    {% endif %}
-
-    <hr class="my-4">
-
-    <p class="text-center mb-3">You can now create a new room:</p>
-    <div class="d-flex justify-content-center gap-3">
-        <a href="{% url 'orders:create_group_purchase' product.id %}" class="btn btn-primary">Create Room</a>
-    </div>
-</div>-->
 
 
 <div class="container mt-5">

@@ -107,13 +107,11 @@
               <td>{{ item.total_price }} SAR</td>
               <td>
                 <div class="d-flex justify-content-center gap-2 flex-wrap">
-                  <!-- زر الحذف -->
                   <a href="{% url 'products:remove_from_cart_view' item.product.id %}" 
                      class="btn btn-outline-danger btn-sm d-flex align-items-center gap-1">
                     <i class="bi bi-trash"></i> Remove
                   </a>
                   
-                  <!-- زر الشراء -->
                   <a href="{% url 'orders:create_order_view' item.product.id %}" 
                      class="btn btn-outline-primary btn-sm d-flex align-items-center gap-1">
                     <i class="bi bi-cart-check"></i> Buy Now

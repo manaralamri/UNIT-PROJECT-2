@@ -2,63 +2,6 @@
 {% block content %}
 
 
-<!--<div class="container my-5">
-    <div class="card shadow-lg">
-                
-        <div class="card-body">
-            <h1 class="text-center text-primary mb-4">Group purchase:{{ group_purchase.product.name }}</h1>
-            <p><strong>Expiration Time:</strong> {{ group_purchase.expiration_time }}</p>
-
-            <h3 class="text-center">Number of participants: 
-                <span class="badge bg-info">{{ group_purchase.participants.count }}</span> /
-                <span class="badge bg-secondary">{{ group_purchase.product.max_participants }}</span>
-            </h3>
-
-            <div class="my-4">
-                <p class="text-center">You can share the following link with other members.:</p>
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control" value="{{ group_purchase_link }}" readonly>
-                    <button class="btn btn-outline-secondary" onclick="navigator.clipboard.writeText('{{ group_purchase_link }}')">نسخ</button>
-                </div>
-            </div>
-              
-            <div class="mb-4">
-                <p><strong>Participants so far:</strong></p>
-                <ul class="list-group">
-                    {% for participant in group_purchase.participants.all %}
-                        <li class="list-group-item">{{ participant.username }}</li>
-                    {% empty %}
-                        <li class="list-group-item text-muted">There are no participants yet.</li>
-                    {% endfor %}
-                </ul>
-            </div>
-
-            <div class="text-center mb-4">
-                <p class="fw-bold">condition: 
-                    {% if group_purchase.is_active %}
-                        <span class="badge bg-success">open ✅</span>
-                    {% else %}
-                        <span class="badge bg-danger">closed ❌</span>
-                    {% endif %}
-                </p>
-            </div>
-
-            <div class="text-center">
-                {% if group_purchase.participants.count < group_purchase.product.max_participants %}
-                    <a href="{% url 'orders:join_group_purchase' group_purchase.id %}" class="btn btn-primary">
-                        👥 Join the group buy
-                    </a>
-                {% else %}
-                    <p class="text-danger fw-bold">The maximum number of participants has been reached!</p>
-                {% endif %}
-            </div>
-
-            <div class="text-center mt-4">
-                <a href="{% url 'products:product_detail_view' group_purchase.product.id %}" class="btn btn-info">Back to product</a>
-            </div>
-        </div>
-    </div>
-</div>-->
 
 
 <div class="container my-5">

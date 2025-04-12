@@ -12,8 +12,8 @@ urlpatterns = [
   path('toggle-favorite/<int:product_id>/', views.toggle_favorite_view, name='toggle_favorite_view'),
   path('favorites/', views.favorite_products_view, name='favorite_products_view'),
   path('cart/', views.cart_view, name='cart_view'), 
-  path('add/<int:product_id>/', views.add_to_cart_view, name='add_to_cart_view'),  # لإضافة منتج للسلة
-  path('remove/<int:product_id>/', views.remove_from_cart_view, name='remove_from_cart_view'),  # لإزالة منتج من السلة
+  path('add/<int:product_id>/', views.add_to_cart_view, name='add_to_cart_view'),  
+  path('remove/<int:product_id>/', views.remove_from_cart_view, name='remove_from_cart_view'), 
   path('cart/increase/<int:product_id>/', views.increase_cart_quantity_view, name='increase_cart_quantity_view'),
   path('cart/decrease/<int:product_id>/', views.decrease_cart_quantity_view, name='decrease_cart_quantity_view'),
 

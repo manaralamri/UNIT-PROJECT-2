@@ -24,17 +24,7 @@
               <option value="Electronics" {% if request.GET.category == 'Electronics' %} selected {% endif %}>Electronics</option>
           </select>
 
-                      <!-- Filter by Group Price 
-                      <select name="group_price" class="form-select">
-                        <option value="">Select Group Price</option>
-                        {% for price in available_group_prices %}
-                        <option value="{{ price }}" {% if request.GET.group_price == price|stringformat:".2f" %} selected {% endif %}>
-                            {{ price }} ريال
-                        </option>
-                        {% endfor %}
-                    </select>-->
 
-                                <!-- ترتيب حسب سعر القروب -->
             <select name="group_price_sort" class="form-select">
                 <option value="">Sort by Group Price</option>
                 <option value="asc" {% if request.GET.group_price_sort %} selected {% endif %}>Lowest to Highest</option>
@@ -42,24 +32,6 @@
 
         
 
-          <!--{% if category_filter == "Brands" and brands %}
-          <form method="GET" action="{% url 'products:search_products_view' %}">
-              <input type="hidden" name="category" value="Brands">
-              <select name="brand" onchange="this.form.submit()">
-                  <option value="">All Brands</option>
-                  {% for brand in brands %}
-                      <option value="{{ brand }}" {% if brand == brand_filter %}selected{% endif %}>{{ brand }}</option>
-                  {% endfor %}
-              </select>
-          </form>
-      {% endif %}-->
-                          
-            <!-- Order by dropdown 
-            <select name="order_by" class="form-select">
-                <option value="">Order By</option>
-                <option value="category" {% if request.GET.order_by == 'category' %} selected {% endif %}>Category</option>
-                <option value="price" {% if request.GET.order_by == 'price' %} selected {% endif %}>Price (High to Low)</option>
-            </select>-->
 
             <input type="submit" value="Apply" class="btn btn-primary"/>
         </div>

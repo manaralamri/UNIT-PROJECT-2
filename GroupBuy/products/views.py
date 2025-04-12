@@ -156,6 +156,7 @@ def toggle_favorite_view(request: HttpRequest, product_id: int):
 
     return redirect("products:product_detail_view", product_id=product.id)
 
+
 def favorite_products_view(request: HttpRequest):
     if not request.user.is_authenticated:
         messages.error(request, "You must be logged in to view your favorites.", "alert-danger")
@@ -186,6 +187,7 @@ def cart_view(request: HttpRequest):
 
     cart, created = Cart.objects.get_or_create(user=request.user)
     return render(request, "cart/cart_view.html", {"cart": cart})
+
 
 def add_to_cart_view(request: HttpRequest, product_id: int):
     """Add a product to the cart, and increase the quantity if it already exists."""
@@ -219,6 +221,8 @@ def add_to_cart_view(request: HttpRequest, product_id: int):
 
     return redirect("products:cart_view")
 
+
+
 def remove_from_cart_view(request: HttpRequest, product_id: int):
     """Remove a product from the cart."""
     if not request.user.is_authenticated:
@@ -241,6 +245,8 @@ def remove_from_cart_view(request: HttpRequest, product_id: int):
 
     return redirect("products:cart_view")
 
+
+
 def increase_cart_quantity_view(request: HttpRequest, product_id: int):
     """Increase the quantity of a product in the cart."""
     if not request.user.is_authenticated:
@@ -260,6 +266,8 @@ def increase_cart_quantity_view(request: HttpRequest, product_id: int):
         messages.error(request, "An error occurred while updating quantity.", "alert-danger")
 
     return redirect("products:cart_view")
+
+
 
 def decrease_cart_quantity_view(request: HttpRequest, product_id: int):
     """Reduce the quantity of a product in the cart or delete it if the quantity reaches 1."""

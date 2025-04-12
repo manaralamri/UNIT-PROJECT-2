@@ -2,66 +2,6 @@
 
 {% block content %}
 
-<!--<h2 class="text-center my-4">Seller Control Panel - {{ user.username }}</h2>
-
-<div class="container">
-  <div class="row">
-
-    {% for item in product_data %}
-      
-      {% for order in item.individual_orders %}
-        <div class="col-md-6 mb-4">
-          <div class="card shadow-sm h-100">
-            <div class="row g-0">
-              <div class="col-md-4">
-                <img src="{{ item.product.image.url }}" class="img-fluid rounded-start" alt="{{ item.product.name }}">
-              </div>
-              <div class="col-md-8">
-                <div class="card-body">
-                  <h5 class="card-title">{{ item.product.name }}</h5>
-                  <p class="card-text text-primary"><strong>Order Type:</strong> Individual</p>
-                  <p class="card-text"><strong>Price:</strong> {{ item.product.price }} SAR</p>
-                  <p class="card-text"><strong>Number of Buyers:</strong> {{ item.individual_orders.count }}</p>
-
-                  <a href="{% url 'products:product_detail_view' item.product.id %}" class="btn btn-outline-success btn-sm">View Product Details</a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      {% endfor %}
-
-      {% for group_order in item.group_orders %}
-        <div class="col-md-6 mb-4">
-          <div class="card shadow-sm h-100">
-            <div class="row g-0">
-              <div class="col-md-4">
-                <img src="{{ item.product.image.url }}" class="img-fluid rounded-start" alt="{{ item.product.name }}">
-              </div>
-              <div class="col-md-8">
-                <div class="card-body">
-                  <h5 class="card-title">{{ item.product.name }}</h5>
-                  <p class="card-text text-success"><strong>Order Type:</strong> Group</p>
-                  <p class="card-text"><strong>Group Price:</strong> {{ item.product.group_price }} SAR</p>
-                  <p class="card-text"><strong>Participants:</strong> {{ group_order.participants.count }}</p>
-
-                  <a href="{% url 'products:product_detail_view' item.product.id %}" class="btn btn-outline-success btn-sm">View Product Details</a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      {% endfor %}
-
-    {% empty %}
-      <div class="col-12">
-        <div class="alert alert-info text-center">No products or orders yet.</div>
-      </div>
-    {% endfor %}
-
-  </div>
-</div>-->
-
 
 <h2 class="text-center my-4">Seller Control Panel - {{ user.username }}</h2>
 

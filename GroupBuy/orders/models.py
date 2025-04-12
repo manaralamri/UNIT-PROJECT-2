@@ -2,6 +2,8 @@ from django.db import models
 from products.models import Product
 from django.contrib.auth.models import User
 from decimal import Decimal
+
+
 class GroupPurchase(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     participants = models.ManyToManyField(User, related_name='group_purchases', blank=True)
@@ -27,6 +29,8 @@ class GroupPurchase(models.Model):
     def __str__(self):
         return f"Group purchase for {self.product.name}, {self.participants.count()} participants"
 
+
+
 class Order(models.Model):
     class OrderType(models.TextChoices):
       INDIVIDUAL = 'individual', 'individual'
@@ -40,6 +44,8 @@ class Order(models.Model):
     group_purchase = models.ForeignKey(GroupPurchase, on_delete=models.SET_NULL, null=True, blank=True)  # إضافة ارتباط بالشراء الجماعي
     participants = models.PositiveIntegerField(default=1)  
     created_at = models.DateTimeField(auto_now_add=True)
+
+
     def save(self, *args, **kwargs):
         if self.order_type == self.OrderType.GROUP:
             if self.product.group_price:
