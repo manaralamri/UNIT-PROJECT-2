@@ -10,6 +10,8 @@ from accounts.models import Profile_User, Profile_Seller
 from django.core.mail import send_mail
 from decimal import Decimal
 from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import Count, Max
+from collections import defaultdict
 
 
 def check_group_purchase_availability(group_purchase, product):
@@ -243,6 +245,7 @@ def group_purchase_all(request):
 
 
 def existing_group_choices(request, product_id):
+    #Trying to get the product using the identifier (product_id) from the database
     try:
         product = Product.objects.get(id=product_id)
     except Product.DoesNotExist:
@@ -260,6 +263,34 @@ def order_detail(request, order_id):
     order = Order.objects.get(id=order_id)
     return render(request, 'orders/order_detail.html', {'order': order})
  
+
+
+def user_orders_view(request):
+    try:
+        orders = Order.objects.filter(user=request.user).select_related('product')
+
+        grouped_orders = defaultdict(lambda: defaultdict(list))
+        for order in orders:
+            grouped_orders[order.product][order.order_type].append(order)
+
+        product_orders = []
+        for product, order_types in grouped_orders.items():
+            for order_type, orders_list in order_types.items():
+                product_orders.append({
+                    'product': product,
+                    'order_type': order_type,  
+                    'count': len(orders_list),
+                    'last_order': sorted(orders_list, key=lambda x: x.created_at)[-1],
+                })
+
+        return render(request, 'orders/user_orders.html', {
+            'orders_grouped': product_orders,
+        })
+
+    except Exception as e:
+        messages.error(request, 'An error occurred while retrieving your requests.', 'alert-danger')
+        return redirect('main:home_view')
+
 
 def test_payment_view(request, order_id):
     try:

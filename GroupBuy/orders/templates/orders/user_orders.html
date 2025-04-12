@@ -1,0 +1,51 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+  <h2 class="mb-4 text-center">🧾 My Orders</h2>
+  <hr>
+
+  <div class="row">
+
+    
+    {% for item in orders_grouped %}
+    <div class="col-md-4 mb-4 d-flex align-items-stretch">
+      <div class="card shadow-sm border" style="width: 100%; min-height: 100%;">
+        
+        {% if item.product.image %}
+          <img src="{{ item.product.image.url }}" class="card-img-top" alt="{{ item.product.name }}" style="height: 200px; object-fit: cover;">
+        {% else %}
+          <img src="{% static 'images/default-product.jpg' %}" class="card-img-top" alt="Product Image" style="height: 200px; object-fit: cover;">
+        {% endif %}
+  
+        <div class="card-body d-flex flex-column justify-content-between">
+          <div>
+            <h5 class="card-title">{{ item.product.name }}</h5>
+            <p class="card-text"><strong>Times Ordered:</strong> {{ item.count }}</p>
+            <p class="card-text"><strong>Type of Order:</strong> 
+              {% if item.order_type == 'individual' %}
+                Individual Order
+              {% else %}
+                Group Purchase
+              {% endif %}
+            </p>
+            <p class="card-text"><strong>Last Date:</strong> {{ item.last_order.created_at|date:"Y-m-d H:i" }}</p>
+          </div>
+  
+          <a href="{% url 'products:product_detail_view' item.product.id %}" class="btn btn-primary mt-2">View Product Details</a>
+        </div>
+      </div>
+    </div>
+  {% empty %}
+    <div class="col-12 text-center">
+      <p>No orders yet.</p>
+    </div>
+  {% endfor %}
+  
+  </div>
+</div>
+
+
+
+{% endblock %}

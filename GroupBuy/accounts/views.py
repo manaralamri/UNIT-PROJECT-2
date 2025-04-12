@@ -230,36 +230,3 @@ def seller_dashboard_view(request):
 
             
 
-#def seller_dashboard_view(request):
-#    try:
-#        if not hasattr(request.user, 'profile_seller'):
-#            messages.error(request, 'Sorry, this page is for sellers only.', 'alert-danger')
-#            return redirect('main:home_view')  
-#
-#        products = Product.objects.filter(seller=request.user)
-#
-#        product_data = []
-#        for product in products:
-#            try:
-#                individual_orders = Order.objects.filter(product=product)
-#                group_orders = GroupPurchase.objects.filter(product=product)
-#            except Exception as e:
-#                messages.warning(request, f'Error loading orders for product {product.name}: {str(e)}', 'alert-warning')
-#                individual_orders = []
-#                group_orders = []
-#
-#            product_data.append({
-#                'product': product,
-#                'individual_orders': individual_orders,
-#                'group_orders': group_orders,
-#            })
-#
-#        return render(request, 'accounts/seller_dashboard.html', {'product_data': product_data})
-#    
-#    except ObjectDoesNotExist:
-#        messages.error(request, 'Some related objects were not found.', 'alert-danger')
-#        return redirect('main:home_view')
-#
-#    except Exception as e:
-#        messages.error(request, 'An unexpected error occurred', 'alert-danger')
-#        return redirect('main:home_view')

@@ -80,7 +80,7 @@
             <a class="nav-link mx-2 active text-white" aria-current="page" href="/">Home</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link mx-2 text-white" href="#">Products</a>
+            <a class="nav-link mx-2 text-white" href="">Products</a>
           </li>
           <li class="nav-item"> 
             {% if request.user.is_authenticated and request.user.profile_seller %}
@@ -100,7 +100,7 @@
               Company
             </a>
             <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-              <li><a class="dropdown-item" href="{% url 'products:favorite_products_view' %}">favorites<i class="bi bi-heart"></i></a></li>
+              <li><a class="dropdown-item" href="{% url 'orders:user_orders_view' %}">All Orders</a></li>
 
               <li><a class="dropdown-item" href="{% url 'orders:group_purchase_all' %}">All GroupBuy</a></li>
               <li><a class="dropdown-item" href="#">Contact us</a></li>
