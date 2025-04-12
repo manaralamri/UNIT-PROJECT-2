@@ -97,13 +97,13 @@
           <li class="nav-item dropdown">
             {% if request.user.is_authenticated and request.user.profile_user %}
             <a class="nav-link mx-2 dropdown-toggle text-white" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              Company
-            </a>
+              Marketplace Hub
+                        </a>
             <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
               <li><a class="dropdown-item" href="{% url 'orders:user_orders_view' %}">All Orders</a></li>
 
               <li><a class="dropdown-item" href="{% url 'orders:group_purchase_all' %}">All GroupBuy</a></li>
-              <li><a class="dropdown-item" href="#">Contact us</a></li>
+              <li><a class="dropdown-item" href="#">Cart</a></li>
               {%endif%}
             </ul>
           </li>

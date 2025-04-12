@@ -3,6 +3,16 @@
 
 {% block content %}
 
+{% if not request.user.is_authenticated %}
+  <div class="container mt-5">
+    <div class="alert alert-warning text-center" role="alert">
+      🚫 You must be logged in to view your payment.
+    </div>
+    <div class="text-center">
+      <a href="{% url 'accounts:login' %}" class="btn btn-primary">Login</a>
+    </div>
+  </div>
+{% else %}
 
 <div class="container mt-5">
   <h2 class="mb-4 text-center">Checkout</h2>
@@ -73,5 +83,6 @@
     </div>
   </div>
 </div>
+{%endif%}
 
 {% endblock %}

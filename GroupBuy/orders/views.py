@@ -15,7 +15,13 @@ from collections import defaultdict
 
 
 def check_group_purchase_availability(group_purchase, product):
-    """Make sure the group buying room is still open and available.."""
+    """
+    Ensure that the group purchase room is still open and available by checking:
+    - Product quantity > 0
+    - Number of participants in the group purchase < maximum allowed participants
+    
+    If availability is not cached, calculate it and store it in cache.
+    """
     cache_key = f"group_purchase_{group_purchase.id}_availability"
     is_available = cache.get(cache_key)
     
@@ -102,18 +108,20 @@ def create_group_purchase(request, product_id):
     """
 
     if not request.user.is_authenticated:
-        messages.error(request, "You must be logged in to add items to your cart.", "alert-danger")
+        messages.error(request, "You must be logged in to create group", "alert-danger")
         return redirect("accounts:sign_in")
 
     if not Profile_User.objects.filter(user=request.user).exists():
           messages.error(request, "Only User can order for group.", "alert-danger")
           return redirect('main:home_view')
+    
     try:
         product = Product.objects.get(id=product_id)
 
     except  Exception as e :
         messages.error(request, "The product does not exist.", "alert-danger")
         return redirect('products:product_list_view')
+
 
     # Check stock levels
     if product.quantity <= 0:
@@ -166,6 +174,15 @@ def join_group_purchase(request, group_purchase_id):
     - The user is not already in the group
     - There's availability (quantity + max participants)
     """
+
+    if not request.user.is_authenticated:
+        messages.error(request, "You must be logged view all group.", "alert-danger")
+        return redirect("accounts:sign_in")
+
+    if not Profile_User.objects.filter(user=request.user).exists():
+          messages.error(request, "Only User can joining for group.", "alert-danger")
+          return redirect('main:home_view')
+
     try:
         group_purchase = GroupPurchase.objects.get(id=group_purchase_id)
         product = group_purchase.product
@@ -230,7 +247,18 @@ def join_group_purchase(request, group_purchase_id):
 
 
 def group_purchase_detail(request, group_purchase_id):
-    """View group room details"""
+    """
+    View for displaying the details of a group purchase room.
+    Ensures the user is logged in and has a valid user profile.
+    """
+    if not request.user.is_authenticated:
+        messages.error(request, "You must be logged view detail group.", "alert-danger")
+        return redirect("accounts:sign_in")
+
+    if not Profile_User.objects.filter(user=request.user).exists():
+          messages.error(request, "Only User can joining for group.", "alert-danger")
+          return redirect('main:home_view')
+
     group_purchase = GroupPurchase.objects.get(id=group_purchase_id)
     group_purchase.save()
 
@@ -238,14 +266,36 @@ def group_purchase_detail(request, group_purchase_id):
 
 
 def group_purchase_all(request):
-    """View group room list"""
+    """
+    View for displaying a list of all active, public group purchase rooms.
+    Ensures the user is logged in and has a valid user profile.
+    """
+    if not request.user.is_authenticated:
+        messages.error(request, "You must be logged view all group.", "alert-danger")
+        return redirect("accounts:sign_in")
+
+    if not Profile_User.objects.filter(user=request.user).exists():
+          messages.error(request, "Only User can order for group.", "alert-danger")
+          return redirect('main:home_view')
+
     group_purchases = GroupPurchase.objects.select_related('product').filter(is_private=False).order_by('-id')
     return render(request, 'orders/group_purchase_all.html', {'group_purchases': group_purchases})
 
 
 
 def existing_group_choices(request, product_id):
-    #Trying to get the product using the identifier (product_id) from the database
+    """
+    Displays available group purchase rooms for a specific product.
+    Allows the user to join an existing group purchase if the conditions are met.
+    """
+    if not request.user.is_authenticated:
+        messages.error(request, "You must be logged in to existing group.", "alert-danger")
+        return redirect("accounts:sign_in")
+
+    if not Profile_User.objects.filter(user=request.user).exists():
+          messages.error(request, "Only User can order for group.", "alert-danger")
+          return redirect('main:home_view')
+
     try:
         product = Product.objects.get(id=product_id)
     except Product.DoesNotExist:
@@ -260,13 +310,27 @@ def existing_group_choices(request, product_id):
     })
 
 def order_detail(request, order_id):
+    """
+    View for displaying details of an individual order.
+    Retrieves the order using its ID and renders its details.
+    """
+
     order = Order.objects.get(id=order_id)
     return render(request, 'orders/order_detail.html', {'order': order})
  
 
 
 def user_orders_view(request):
+    """
+    View for displaying all orders placed by the authenticated user.
+    Orders are grouped by product, and the most recent order is shown for each product.
+    """
+
     try:
+        if not request.user.is_authenticated:
+            messages.error(request, 'Please login to access this page.', 'alert-danger')
+            return redirect('accounts:login')
+
         orders = Order.objects.filter(user=request.user).select_related('product')
 
         grouped_orders = defaultdict(lambda: defaultdict(list))
@@ -288,12 +352,22 @@ def user_orders_view(request):
         })
 
     except Exception as e:
-        messages.error(request, 'An error occurred while retrieving your requests.', 'alert-danger')
-        return redirect('main:home_view')
+          messages.error(request, 'An error occurred while retrieving your requests.', 'alert-danger')
+          return redirect('main:home_view')
+
 
 
 def test_payment_view(request, order_id):
+    """
+    View for processing a test payment for an order.
+    If the order is part of a group purchase, it handles the payment for the group.
+    """
+
     try:
+        if not request.user.is_authenticated:
+            messages.error(request, 'Please login to access this page.', 'alert-danger')
+            return redirect('main:home_view')
+
         order = Order.objects.get(id=order_id)
     except Order.DoesNotExist:
         messages.error(request, "The order does not exist.", "alert-danger")

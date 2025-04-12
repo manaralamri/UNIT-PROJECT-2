@@ -33,12 +33,16 @@ def create_product_view(request:HttpRequest):
 
   return render(request, 'products/create_product.html', {'product_form':product_form, 'CategoryChoices': reversed(Product.CategoryChoices.choices),})
 
+
+
 def all_product_view(request:HttpRequest):
   # Get all products
   products = Product.objects.all()
 
 
   return render(request, 'products/all_products.html', {'products':products,})
+
+
 
 def product_detail_view(request:HttpRequest, product_id:int):
   # Get product by id
@@ -58,6 +62,8 @@ def product_detail_view(request:HttpRequest, product_id:int):
    
 
   return render(request, 'products/product_detail.html', {"product":product, 'reviews':reviews, 'related_products': related_product,  'form':form, "average_rating":avg["rating__avg"]})
+
+
 
 def product_update_view(request:HttpRequest, product_id:int):
   if not request.user.is_authenticated:
@@ -94,6 +100,7 @@ def product_update_view(request:HttpRequest, product_id:int):
   return render(request, 'products/product_update.html', {'product':product})
 
 
+
 def product_delete_view(request:HttpRequest, product_id:int):
   if not request.user.is_authenticated:
     messages.error(request, "You must be logged in to delete products.", "alert-danger")
@@ -121,8 +128,6 @@ def add_review_view(request:HttpRequest, product_id):
       new_review.save()
       messages.success(request,"Add Review Successfully", "alert-success")
    return redirect('products:product_detail_view', product_id=product_id)
-
-
 
 
 
@@ -155,6 +160,7 @@ def toggle_favorite_view(request: HttpRequest, product_id: int):
         print(e)
 
     return redirect("products:product_detail_view", product_id=product.id)
+
 
 
 def favorite_products_view(request: HttpRequest):

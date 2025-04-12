@@ -2,13 +2,24 @@
 {% load static %}
 
 {% block content %}
+
+
+{% if not request.user.is_authenticated %}
+  <div class="container mt-5">
+    <div class="alert alert-warning text-center" role="alert">
+      🚫 You must be logged in to view your orders.
+    </div>
+    <div class="text-center">
+      <a href="{% url 'accounts:login' %}" class="btn btn-primary">Login</a>
+    </div>
+  </div>
+{% else %}
+
 <div class="container mt-5">
   <h2 class="mb-4 text-center">🧾 My Orders</h2>
   <hr>
 
   <div class="row">
-
-    
     {% for item in orders_grouped %}
     <div class="col-md-4 mb-4 d-flex align-items-stretch">
       <div class="card shadow-sm border" style="width: 100%; min-height: 100%;">
@@ -37,15 +48,14 @@
         </div>
       </div>
     </div>
-  {% empty %}
+    {% empty %}
     <div class="col-12 text-center">
       <p>No orders yet.</p>
     </div>
-  {% endfor %}
-  
+    {% endfor %}
   </div>
 </div>
 
-
+{% endif %}
 
 {% endblock %}
