@@ -9,7 +9,10 @@ from django.db.models import Avg
 from django.db import transaction
 
 def create_product_view(request:HttpRequest):
-  # Create a new product
+  """
+  Allows an authenticated seller to create a new product.
+  Only accessible by users who have a seller profile.
+  """
   if not request.user.is_authenticated:
       messages.error(request, "You must be logged in to add products.", "alert-danger")
       return redirect('accounts:sign_in')
@@ -36,7 +39,9 @@ def create_product_view(request:HttpRequest):
 
 
 def all_product_view(request:HttpRequest):
-  # Get all products
+  """
+  Display a list of all available products.
+  """
   products = Product.objects.all()
 
 
@@ -45,7 +50,10 @@ def all_product_view(request:HttpRequest):
 
 
 def product_detail_view(request:HttpRequest, product_id:int):
-  # Get product by id
+  """
+  Display product details along with its reviews and related products.
+  Allows users to place an order from the product detail page.
+  """
   product = Product.objects.get(id=product_id)
   reviews = Review.objects.filter(product=product)
   related_product = Product.objects.filter(category=product.category).exclude(id=product_id).order_by('?')[:4]
@@ -66,6 +74,11 @@ def product_detail_view(request:HttpRequest, product_id:int):
 
 
 def product_update_view(request:HttpRequest, product_id:int):
+  """
+  Allow authenticated sellers to update their own product details.
+  Redirects non-authenticated users and non-sellers.
+  """
+
   if not request.user.is_authenticated:
       messages.error(request, "You must be logged in to update products.", "alert-danger")
       return redirect('accounts:sign_in')
@@ -102,6 +115,11 @@ def product_update_view(request:HttpRequest, product_id:int):
 
 
 def product_delete_view(request:HttpRequest, product_id:int):
+  """
+  Allow authenticated sellers to delete their own product.
+  Redirects non-authenticated users and non-sellers.
+  """
+
   if not request.user.is_authenticated:
     messages.error(request, "You must be logged in to delete products.", "alert-danger")
     return redirect('accounts:sign_in')
@@ -117,6 +135,11 @@ def product_delete_view(request:HttpRequest, product_id:int):
 
 
 def add_review_view(request:HttpRequest, product_id):
+   """
+   Allow authenticated users to add a review to a product.
+   Redirects unauthenticated users to sign in page.
+   """
+
    if not request.user.is_authenticated:
       messages.error(request, "Only registered user can add review", "alert-danger")
       return redirect("accounts:sign_in")
@@ -132,6 +155,13 @@ def add_review_view(request:HttpRequest, product_id):
 
 
 def toggle_favorite_view(request: HttpRequest, product_id: int):
+    """
+    Toggle a product in the authenticated user's favorites list.
+    - If the product is already favorited, it will be removed.
+    - If not, it will be added to the favorites.
+    Only authenticated users with a Profile_User can access this feature.
+    """
+
     if not request.user.is_authenticated :
         messages.error(request, "You must be logged in to manage favorites.", "alert-danger")
         return redirect("accounts:sign_in")
@@ -164,6 +194,11 @@ def toggle_favorite_view(request: HttpRequest, product_id: int):
 
 
 def favorite_products_view(request: HttpRequest):
+    """
+    Display a list of the currently authenticated user's favorite products.
+    Only accessible by logged-in users with a Profile_User.
+    """
+
     if not request.user.is_authenticated:
         messages.error(request, "You must be logged in to view your favorites.", "alert-danger")
         return redirect("accounts:sign_in")
